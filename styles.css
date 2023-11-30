@@ -97,23 +97,23 @@ body {
 }
 
 .DexNav-list-pokemon:hover img{
-    animation: bounce 0.5s ease infinite;
+    animation: pokemonBounce 0.5s ease infinite;
 }
 
 .DexNav-list-moves:hover img{
-    animation: rotateScale 0.5s ease infinite;
+    animation: moveScale 0.5s ease infinite;
 }
 
 .DexNav-list-abilities:hover img{
-    animation: fadeInOut 0.5s ease infinite;
+    animation: abilitiesFade 0.5s ease infinite;
 }
 
 .DexNav-list-items:hover img{
-    animation: slideIn 0.5s ease infinite;
+    animation: itemSpin 0.5s ease infinite;
 }
 
 .DexNav-list-type:hover img{
-    animation: pulse 0.5s ease infinite;
+    animation: typeRotate 0.5s ease infinite;
 }
 
 .DexNavButton {
@@ -264,59 +264,56 @@ body.dark-mode {
 
 */
 
-@keyframes bounce {
+@keyframes pokemonBounce {
     0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
+      transform: translateY(0);
     }
     40% {
-        transform: translateY(-10px);
+      transform: translateY(-10px);
     }
     60% {
-        transform: translateY(-5px);
+      transform: translateY(-5px);
     }
-}
+  }
 
-@keyframes rotateScale {
-    0% {
-        transform: rotate(0) scale(1);
+  @keyframes moveScale {
+    0%, 100% {
+      transform: scale(1);
     }
     50% {
-        transform: rotate(180deg) scale(1.2);
+      transform: scale(1.1);
     }
-    100% {
-        transform: rotate(360deg) scale(1);
-    }
-}
+  }
 
-@keyframes fadeInOut {
+@keyframes abilitiesFade {
     0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
         opacity: 1;
     }
-    50% {
-        opacity: 0.5;
-    }
 }
 
-@keyframes slideIn {
-    0% {
-        transform: translateX(0);
+@keyframes itemSpin {
+    0%, 100% {
+      transform: rotate(0deg);
     }
     50% {
-        transform: translateX(20px);
+      transform: rotate(180deg);
     }
     100% {
-        transform: translateX(0);
+      transform: rotate(0deg);
     }
-}
+  }
 
-@keyframes pulse {
+@keyframes typeRotate {
     0%, 100% {
-        transform: scale(1);
+      transform: rotate(0deg);
     }
     50% {
-        transform: scale(1.2);
+      transform: rotate(180deg);
     }
-}
+  }
 
 @keyframes fold-unfold {
     0% {
