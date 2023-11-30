@@ -276,7 +276,7 @@ body.dark-mode {
     }
   }
 
-  @keyframes moveScale {
+@keyframes moveScale {
     0%, 100% {
       transform: scale(1);
     }
