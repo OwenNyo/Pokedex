@@ -269,7 +269,7 @@ body.dark-mode {
       transform: translateY(0);
     }
     40% {
-      transform: translateY(-10px);
+      transform: translateY(-3px);
     }
     60% {
       transform: translateY(-5px);
@@ -281,13 +281,13 @@ body.dark-mode {
       transform: scale(1);
     }
     50% {
-      transform: scale(1.1);
+      transform: scale(1.2);
     }
   }
 
 @keyframes abilitiesFade {
     0%, 100% {
-        opacity: 0.3;
+        opacity: 0.5;
     }
     50% {
         opacity: 1;
@@ -296,13 +296,13 @@ body.dark-mode {
 
 @keyframes itemSpin {
     0%, 100% {
-      transform: rotate(0deg);
+      transform: scaleX(1);
     }
     50% {
-      transform: rotate(180deg);
+      transform: scaleX(-1);
     }
     100% {
-      transform: rotate(0deg);
+      transform: scaleX(1);
     }
   }
 
@@ -311,7 +311,7 @@ body.dark-mode {
       transform: rotate(0deg);
     }
     50% {
-      transform: rotate(180deg);
+      transform: rotate(360deg);
     }
   }
 
