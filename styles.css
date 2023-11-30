@@ -8,6 +8,11 @@ body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+/* 
+
+ ========== Dex Nav ==========
+
+*/
 
 .DexNav {
     width: 120px;
@@ -173,22 +178,9 @@ body {
     transition: transform 0.5s ease;
 }
 
-/* Dark mode styles */
-.light-mode {
-    color: #000;
-}
+/* 
 
-.dark-mode {
-    color: #fff; 
-}
-
-body.dark-mode {
-    background-color: #36454F;
-}
-
-/*
-
-====== Dex Content =======
+ ========== Dex Content ==========
 
 */
 
@@ -233,7 +225,26 @@ body.dark-mode {
     background-color: #f2f2f2;
 }
 
-/* Add these styles for dark mode */
+
+
+/* 
+
+ ========== Dark mode styles ==========
+
+*/
+
+.light-mode {
+    color: #000;
+}
+
+.dark-mode {
+    color: #fff; 
+}
+
+body.dark-mode {
+    background-color: #36454F;
+}
+
 .light-mode .featured-pokemon-table th,
 .light-mode .featured-pokemon-table td {
     color: #000;
@@ -247,11 +258,9 @@ body.dark-mode {
     color: #fff;
 }
 
+/* 
 
-
-/*
-
-====== Key Frames ======
+ ========== Key Frames ==========
 
 */
 
