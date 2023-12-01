@@ -63,9 +63,9 @@ async function getPokemon(num) {
 function PokedexHTML(pokemon) {
     return `
     <tr class="DexTable-row">
-        <td class="DexTable-data">${capitalizeFirst(pokemon.name)}</td>
-        <td class="DexTable-data">${capitalizeFirst(pokemon.types).join(', ')}</td>
-        <td class="DexTable-data">${capitalizeFirst(pokemon.abilities).join(', ')}</td>
+        <td class="DexTable-data">${capitalize(pokemon.name.toString())}</td>
+        <td class="DexTable-data">${capitalize(pokemon.types.toString())}</td>
+        <td class="DexTable-data">${capitalize(pokemon.abilities.toString())}</td>
     </tr>`;
 }
 
@@ -79,7 +79,11 @@ function renderPokedex() {
 }
 
 
-// Re-usable functions
-function capitalizeFirst(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+function capitalize(str) {
+    if (typeof str !== 'string') {
+        return str; // Return unchanged if it's not a string
+    }
+
+    // Split the string by commas, capitalize each word, and join them back together
+    return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join(", ");
 }
