@@ -208,14 +208,14 @@ body {
     margin-bottom: 10px;
 }
 
-.featured-pokemon-table {
+.DexTable {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
 }
 
-.featured-pokemon-table th,
-.featured-pokemon-table td {
+.DexTable-header,
+.DexTable td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;

@@ -25,3 +25,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 });
+
+let DexTable = document.querySelector(".DexTable");
+let DexTableBody = document.querySelector(".DexTable-body");
+
+async function renderPokemonAPI() {
+    // Fetch Pokemon Character API
+    const pokemon_result = await fetch("https://pokeapi.co/api/v2/pokemon/");
+    const pokemon_characters = await pokemon_result.json();
+
+    // Fetch Pokemon Details
+    const pokemon_details = await Promise.all(pokemon_characters.map(async (character) =>
+        {
+            const pokemon_result = await fetch(`https://pokeapi.co/api/v2/pokemon/${character}`);
+            const pokemon_detail = await pokemon_result.json();
+            return pokemon_detail;
+        })
+    );
+    
+    DexTableBody.innerHTML = pokemon_characters.map((data, index) => {
+        const data1 = pokemon_details[index];
+        return PokedexHTML(data, data1);
+    }).join(``);
+
+}
+
+function PokedexHTML(pokemon_characters, pokemon_details) {
+    return `
+    <tr class="DexTable-row">
+        <td class="DexTable-data">${pokemon_characters}</td>
+        <td class="DexTable-data">${pokemon_details.types}</td>
+        <td class="DexTable-data">${pokemon_details.abilities}</td>
+    </tr>
+    `;
+}
+
+renderPokemonAPI();
