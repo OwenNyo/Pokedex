@@ -26,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-let DexTable = document.querySelector(".DexTable");
 let DexTableBody = document.querySelector(".DexTable-body");
 
 const pokemonCount = 1292;
@@ -43,7 +42,7 @@ window.onload = async function() {
 
 async function getPokemon(num) {
     // Fetch Pokemon Character API
-    let url = "https://pokeapi.co/api/v2/pokemon/" + num.tostring();
+    let url = "https://pokeapi.co/api/v2/pokemon/" + num.toString();
 
     const pokemon_result = await fetch(url);
     const pokemon = await pokemon_result.json();
