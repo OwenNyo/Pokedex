@@ -29,35 +29,48 @@ document.addEventListener("DOMContentLoaded", function () {
 let DexTable = document.querySelector(".DexTable");
 let DexTableBody = document.querySelector(".DexTable-body");
 
-async function renderPokemonAPI() {
-    // Fetch Pokemon Character API
-    const pokemon_result = await fetch("https://pokeapi.co/api/v2/pokemon/");
-    const pokemon_characters = await pokemon_result.json();
+const pokemonCount = 1292;
+var pokedex = {};
 
-    // Fetch Pokemon Details
-    const pokemon_details = await Promise.all(pokemon_characters.map(async (character) =>
-        {
-            const pokemon_result = await fetch(`https://pokeapi.co/api/v2/pokemon/${character}`);
-            const pokemon_detail = await pokemon_result.json();
-            return pokemon_detail;
-        })
-    );
-    
-    DexTableBody.innerHTML = pokemon_characters.map((data, index) => {
-        const data1 = pokemon_details[index];
-        return PokedexHTML(data, data1);
-    }).join(``);
+window.onload = async function() {
+    for (let i = 1; i <= pokemonCount; i++)
+    {
+        await getPokemon(i);
+    }
 
+    renderPokedex();
 }
 
-function PokedexHTML(pokemon_characters, pokemon_details) {
+async function getPokemon(num) {
+    // Fetch Pokemon Character API
+    let url = "https://pokeapi.co/api/v2/pokemon/" + num.tostring();
+
+    const pokemon_result = await fetch(url);
+    const pokemon = await pokemon_result.json();
+
+    console.log(pokemon);
+
+    let pokemonName = pokemon["name"];
+    let pokemonType = pokemon["types"];
+    let pokemonAbility = pokemon["abilities"];
+
+    pokedex[num] = {"name" : pokemonName, "types": pokemonType, "abilities": pokemonAbility}
+}
+
+function PokedexHTML(pokemon) {
     return `
     <tr class="DexTable-row">
-        <td class="DexTable-data">${pokemon_characters}</td>
-        <td class="DexTable-data">${pokemon_details.types}</td>
-        <td class="DexTable-data">${pokemon_details.abilities}</td>
+        <td class="DexTable-data">${pokemon.name}</td>
+        <td class="DexTable-data">${pokemon.types.join(', ')}</td>
+        <td class="DexTable-data">${pokemon.abilities.join(', ')}</td>
     </tr>
     `;
 }
 
-renderPokemonAPI();
+function renderPokedex() {
+    for (let i = 1; i <= pokemonCount; i++) {
+        let pokemonData = pokedex[i];
+        let html = PokedexHTML(pokemonData);
+        DexTableBody.innerHTML += html;
+    }
+}
