@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let DexTableBody = document.querySelector(".DexTable-body");
 
+// Counter at 1017
 const pokemonCount = 1017;
 var pokedex = {};
 
@@ -77,13 +78,75 @@ async function getPokemon(num) {
 
 // Defines table structure
 function PokedexHTML(pokemon) {
-    return `
+    // Helper function to generate the CSS styles for each typing
+    function getTypeStyles(type, isFirstType) {
+        const backgroundColor = getTypeColor(type);
+        const borderColor = getTypeBorderColor(type);
+
+        let styles = `background-color: ${backgroundColor}; border-color: ${borderColor};`;
+
+        if (isFirstType) {
+            styles += 'border-top-right-radius: 0; border-bottom-right-radius: 0;';
+        } else {
+            styles += 'border-top-left-radius: 0; border-bottom-left-radius: 0;';
+        }
+
+        return styles;
+    }
+
+    // Helper function to generate the CSS class for each typing
+    function getTypeClass(type) {
+        // Default class for unknown types
+        const defaultClass = 'type-default';
+
+        // Map types to CSS classes
+        const typeClasses = {
+            'normal': 'type-normal',
+            'fire': 'type-fire',
+            'water': 'type-water',
+            'grass': 'type-grass',
+            'electric': 'type-electric',
+            'ice': 'type-ice',
+            'fighting': 'type-fighting',
+            'poison': 'type-poison',
+            'ground': 'type-ground',
+            'flying': 'type-flying',
+            'psychic': 'type-psychic',
+            'bug': 'type-bug',
+            'rock': 'type-rock',
+            'ghost': 'type-ghost',
+            'dragon': 'type-dragon',
+            'dark': 'type-dark',
+            'steel': 'type-steel',
+            'fairy': 'type-fairy',
+        };
+
+        // Return the CSS class based on the type
+        return typeClasses[type] || defaultClass;
+    }
+
+    // Helper function to generate the CSS styles for each typing
+    function getTypeStyles(type) {
+        let classList = `border-radius ${getTypeClass(type)}`;
+        return classList;
+    }
+
+    // In your code wherever you render the Pokémon in the table
+    const hasSecondType = pokemon.types.length > 1;
+
+    const pokemonRow = `
     <tr class="DexTable-row">
         <td class="DexTable-data">${capitalize(pokemon.name.toString())}</td>
-        <td class="DexTable-data">${capitalize(pokemon.types.toString())}</td>
+        <td class="DexTable-data">
+            <span class="${getTypeStyles(pokemon.types[0])} type_text">${capitalize(pokemon.types[0].toString())}</span>
+            ${hasSecondType ? `<span class="${getTypeStyles(pokemon.types[1])} type_text">${capitalize(pokemon.types[1].toString())}</span>` : ''}
+        </td>
         <td class="DexTable-data">${capitalize(pokemon.regular_abilities.toString())}</td>
         <td class="DexTable-data">${pokemon.hidden_ability ? capitalize(pokemon.hidden_ability.toString()) : ''}</td>
     </tr>`;
+
+    // Assuming DexTableBody is your table body element
+    return pokemonRow;
 }
 
 // Loads records into table
@@ -97,6 +160,10 @@ function renderPokedex() {
 
 
 function capitalize(str) {
+    if (typeof str === 'undefined' || str === null) {
+        return '';  // Return an empty string if the input is undefined or null
+    }
+
     if (typeof str !== 'string') {
         return str; // Return unchanged if it's not a string
     }
