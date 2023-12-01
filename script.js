@@ -58,6 +58,7 @@ async function getPokemon(num) {
     let abilities = pokemon["abilities"];
     let regularAbilities = [];
     let hiddenAbilities = [];
+    let pokemonLogo = pokemon["sprites"].front_default;
 
     abilities.forEach(ability => {
         let abilityName = ability.ability.name;
@@ -72,28 +73,13 @@ async function getPokemon(num) {
         "name": pokemonName,
         "types": pokemonType,
         "regular_abilities": regularAbilities,
-        "hidden_ability": hiddenAbilities
+        "hidden_ability": hiddenAbilities,
+        "sprite" : pokemonLogo
     };
 }
 
 // Defines table structure
 function PokedexHTML(pokemon) {
-    // Helper function to generate the CSS styles for each typing
-    function getTypeStyles(type, isFirstType) {
-        const backgroundColor = getTypeColor(type);
-        const borderColor = getTypeBorderColor(type);
-
-        let styles = `background-color: ${backgroundColor}; border-color: ${borderColor};`;
-
-        if (isFirstType) {
-            styles += 'border-top-right-radius: 0; border-bottom-right-radius: 0;';
-        } else {
-            styles += 'border-top-left-radius: 0; border-bottom-left-radius: 0;';
-        }
-
-        return styles;
-    }
-
     // Helper function to generate the CSS class for each typing
     function getTypeClass(type) {
         // Default class for unknown types
@@ -126,8 +112,18 @@ function PokedexHTML(pokemon) {
     }
 
     // Helper function to generate the CSS styles for each typing
-    function getTypeStyles(type) {
+    function getTypeStyles(type, isFirstType, hasSecondType) {
         let classList = `border-radius ${getTypeClass(type)}`;
+
+        // Apply different border radius based on whether it's the first or second type
+        if (hasSecondType) {
+            if (isFirstType) {
+                classList += ' border-right-radius';
+            } else {
+                classList += ' border-left-radius';
+            }
+        }
+
         return classList;
     }
 
@@ -136,10 +132,17 @@ function PokedexHTML(pokemon) {
 
     const pokemonRow = `
     <tr class="DexTable-row">
-        <td class="DexTable-data">${capitalize(pokemon.name.toString())}</td>
         <td class="DexTable-data">
-            <span class="${getTypeStyles(pokemon.types[0])} type_text">${capitalize(pokemon.types[0].toString())}</span>
-            ${hasSecondType ? `<span class="${getTypeStyles(pokemon.types[1])} type_text">${capitalize(pokemon.types[1].toString())}</span>` : ''}
+            <div class = "DexTable-data-container">
+                <img class="DexTable-data-logo" src="${pokemon.sprite}">
+                <span>${capitalize(pokemon.name.toString())}</span>
+            </div>
+        </td>
+        <td class="DexTable-data">
+            <div class = "DexTable-data-container">
+            <span class="${getTypeStyles(pokemon.types[0], true, hasSecondType)} type_text">${capitalize(pokemon.types[0].toString())}</span>
+            ${hasSecondType ? `<span class="${getTypeStyles(pokemon.types[1], false, true)} type_text">${capitalize(pokemon.types[1].toString())}</span>` : ''}
+            </div>
         </td>
         <td class="DexTable-data">${capitalize(pokemon.regular_abilities.toString())}</td>
         <td class="DexTable-data">${pokemon.hidden_ability ? capitalize(pokemon.hidden_ability.toString()) : ''}</td>

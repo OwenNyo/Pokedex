@@ -214,12 +214,28 @@ body {
     margin-top: 10px;
 }
 
-.DexTable-data,
-.DexTable th{
+.DexTable-data {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+    font-size: 13px;
+}
+
+.DexTable th{
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
     font-size: 15px;
+}
+
+.DexTable-data-container {
+    display : flex; 
+    align-items: center;
+}
+
+.DexTable-data-logo {
+    height: 35px;
+    width: 35px;
 }
 
 /* Define type colors and borders */
@@ -313,6 +329,14 @@ body {
     border-color: 1px solid #c1079b;
 }
 
+.type_text {
+    text-shadow: 1px 1px 1px #333;
+    color: white;
+    font-size: 10px;
+    line-height: 18px;
+    text-align: center;
+}
+
 .border-radius {
     box-sizing: border-box;
     border-radius: 5px;
@@ -321,12 +345,14 @@ body {
     width: 50px;
 }
 
-.type_text {
-    text-shadow: 1px 1px 1px #333;
-    color: white;
-    font-size: 10px;
-    line-height: 15px;
-    text-align: center;
+.border-right-radius {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.border-left-radius {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
 }
 
 
