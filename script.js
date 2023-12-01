@@ -54,9 +54,25 @@ async function getPokemon(num) {
     // Map into variables for us to insert into our pokedex list
     let pokemonName = pokemon["name"];
     let pokemonType = pokemon["types"].map(type => type.type.name);
-    let pokemonAbility = pokemon["abilities"].map(ability => ability.ability.name);
+    let abilities = pokemon["abilities"];
+    let regularAbilities = [];
+    let hiddenAbilities = [];
 
-    pokedex[num] = {"name" : pokemonName, "types": pokemonType, "abilities": pokemonAbility}
+    abilities.forEach(ability => {
+        let abilityName = ability.ability.name;
+        if (ability.is_hidden) {
+            hiddenAbilities.push(abilityName);
+        } else {
+            regularAbilities.push(abilityName);
+        }
+    });
+
+    pokedex[num] = {
+        "name": pokemonName,
+        "types": pokemonType,
+        "regular_abilities": regularAbilities,
+        "hidden_ability": hiddenAbilities
+    };
 }
 
 // Defines table structure
@@ -65,7 +81,8 @@ function PokedexHTML(pokemon) {
     <tr class="DexTable-row">
         <td class="DexTable-data">${capitalize(pokemon.name.toString())}</td>
         <td class="DexTable-data">${capitalize(pokemon.types.toString())}</td>
-        <td class="DexTable-data">${capitalize(pokemon.abilities.toString())}</td>
+        <td class="DexTable-data">${capitalize(pokemon.regular_abilities.toString())}</td>
+        <td class="DexTable-data">${pokemon.hidden_ability ? capitalize(pokemon.hidden_ability.toString()) : ''}</td>
     </tr>`;
 }
 
@@ -85,5 +102,5 @@ function capitalize(str) {
     }
 
     // Split the string by commas, capitalize each word, and join them back together
-    return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join(", ");
+    return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join("<br>");
 }
