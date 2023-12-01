@@ -63,9 +63,9 @@ async function getPokemon(num) {
 function PokedexHTML(pokemon) {
     return `
     <tr class="DexTable-row">
-        <td class="DexTable-data">${pokemon.name.capitalizeFirst()}</td>
-        <td class="DexTable-data">${pokemon.types.capitalizeFirst().join(', ')}</td>
-        <td class="DexTable-data">${pokemon.abilities.capitalizeFirst().join(', ')}</td>
+        <td class="DexTable-data">${capitalizeFirst(pokemon.name)}</td>
+        <td class="DexTable-data">${capitalizeFirst(pokemon.types).join(', ')}</td>
+        <td class="DexTable-data">${capitalizeFirst(pokemon.abilities).join(', ')}</td>
     </tr>`;
 }
 
