@@ -31,6 +31,7 @@ let DexTableBody = document.querySelector(".DexTable-body");
 const pokemonCount = 1017;
 var pokedex = {};
 
+// On load, we will render the page
 window.onload = async function() {
     for (let i = 1; i <= pokemonCount; i++)
     {
@@ -40,8 +41,9 @@ window.onload = async function() {
     renderPokedex();
 }
 
+// Getting pokemon api
 async function getPokemon(num) {
-    // Fetch Pokemon Character API
+    // Fetch url for pokemon api
     let url = "https://pokeapi.co/api/v2/pokemon/" + num.toString();
 
     const pokemon_result = await fetch(url);
@@ -49,6 +51,7 @@ async function getPokemon(num) {
 
     console.log(pokemon);
 
+    // Map into variables for us to insert into our pokedex list
     let pokemonName = pokemon["name"];
     let pokemonType = pokemon["types"].map(type => type.type.name);
     let pokemonAbility = pokemon["abilities"].map(ability => ability.ability.name);
@@ -56,20 +59,27 @@ async function getPokemon(num) {
     pokedex[num] = {"name" : pokemonName, "types": pokemonType, "abilities": pokemonAbility}
 }
 
+// Defines table structure
 function PokedexHTML(pokemon) {
     return `
     <tr class="DexTable-row">
-        <td class="DexTable-data">${pokemon.name}</td>
-        <td class="DexTable-data">${pokemon.types.join(', ')}</td>
-        <td class="DexTable-data">${pokemon.abilities.join(', ')}</td>
-    </tr>
-    `;
+        <td class="DexTable-data">${pokemon.name.capitalizeFirst()}</td>
+        <td class="DexTable-data">${pokemon.types.capitalizeFirst().join(', ')}</td>
+        <td class="DexTable-data">${pokemon.abilities.capitalizeFirst().join(', ')}</td>
+    </tr>`;
 }
 
+// Loads records into table
 function renderPokedex() {
     for (let i = 1; i <= pokemonCount; i++) {
         let pokemonData = pokedex[i];
         let html = PokedexHTML(pokemonData);
         DexTableBody.innerHTML += html;
     }
+}
+
+
+// Re-usable functions
+function capitalizeFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
 }
