@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let DexTableBody = document.querySelector(".DexTable-body");
 
-const pokemonCount = 1292;
+const pokemonCount = 1017;
 var pokedex = {};
 
 window.onload = async function() {
