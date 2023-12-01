@@ -50,8 +50,8 @@ async function getPokemon(num) {
     console.log(pokemon);
 
     let pokemonName = pokemon["name"];
-    let pokemonType = pokemon["types"];
-    let pokemonAbility = pokemon["abilities"];
+    let pokemonType = pokemon["types"].map(type => type.type.name);
+    let pokemonAbility = pokemon["abilities"].map(ability => ability.ability.name);
 
     pokedex[num] = {"name" : pokemonName, "types": pokemonType, "abilities": pokemonAbility}
 }
