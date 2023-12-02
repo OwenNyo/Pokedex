@@ -26,24 +26,28 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-let DexTableBody = document.querySelector(".DexTable-body");
+let DexTableHead = document.querySelector(".DexTable-head");
+let DexTableBody = document.querySelector(".DexTable-body")
 
 // Counter at 1017
 const pokemonCount = 1017;
-var pokedex = {};
 
-// On load, we will render the page
+// Variables for the different api calls
+var pokemondataset = {};
+var movedataset = {};
+
+// On page load, render the different api calls
 window.onload = async function() {
     for (let i = 1; i <= pokemonCount; i++)
     {
-        await getPokemon(i);
+        await getPokemonDataSet(i);
     }
 
-    renderPokedex();
+    renderPageStructure();
 }
 
-// Getting pokemon api
-async function getPokemon(num) {
+// Pokemon Data Set API
+async function getPokemonDataSet(num) {
     // Fetch url for pokemon api
     let url = "https://pokeapi.co/api/v2/pokemon/" + num.toString();
 
@@ -69,7 +73,7 @@ async function getPokemon(num) {
         }
     });
 
-    pokedex[num] = {
+    pokemondataset[num] = {
         "name": pokemonName,
         "types": pokemonType,
         "regular_abilities": regularAbilities,
@@ -79,7 +83,7 @@ async function getPokemon(num) {
 }
 
 // Defines table structure
-function PokedexHTML(pokemon) {
+function PokemonHTMLStructure(pokemon) {
     // Helper function to generate the CSS class for each typing
     function getTypeClass(type) {
         // Default class for unknown types
@@ -152,12 +156,29 @@ function PokedexHTML(pokemon) {
     return pokemonRow;
 }
 
-// Loads records into table
-function renderPokedex() {
-    for (let i = 1; i <= pokemonCount; i++) {
-        let pokemonData = pokedex[i];
-        let html = PokedexHTML(pokemonData);
-        DexTableBody.innerHTML += html;
+// Loads different table structure based on the page
+function renderPageStructure() {
+    const currentPage = window.location.pathname;
+
+    // Clear existing content in the table body
+    DexTableBody.innerHTML = '';
+
+    // Check if the current page is pokemon.html or moves.html
+    if (currentPage.includes("pokemon.html")) {
+        DexTableHead.innerHTML += 
+            `<tr>
+                <th>Pokemon</th>
+                <th>Type</th>
+                <th>Abilities</th>
+                <th>Hidden Abilities</th>
+            </tr>`
+        for (let i = 1; i <= pokemonCount; i++) {
+            let pokemonData = pokemondataset[i];
+            let html = PokemonHTMLStructure(pokemonData);
+            DexTableBody.innerHTML += html;
+        }
+    } else if (currentPage.includes("moves.html")) {
+        // Load Moves HTML structure
     }
 }
 
@@ -173,4 +194,38 @@ function capitalize(str) {
 
     // Split the string by commas, capitalize each word, and join them back together
     return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join("<br>");
+}
+
+
+// Index.html (Landing Page scripts)
+let speechIndex = 0; // Index for tracking the current speech
+
+function showNextSpeech() {
+    const speechBubble = document.getElementById('speechBubble');
+    const neumorphicContainer = document.getElementById('neumorphicContainer');
+    const finishButton = document.getElementById('finishButton');
+    const speeches = [
+        "People affectionately refer to me as the Pokémon Professor.",
+        "This world is inhabited far and wide by creatures called Pokémon.",
+        "For some people, Pokémon are pets. Others use them for battling.",
+        "As for myself, I study Pokémon as a profession.",
+    ];
+
+    if (speechIndex < speeches.length) {
+        speechBubble.innerHTML = speeches[speechIndex];
+        speechIndex++;
+    } else {
+        // If all speeches are shown, hide speech dialogues and show the button
+        neumorphicContainer.removeChild(speechBubble);
+        finishButton.style.display = 'block';
+    }
+
+    // Trigger animation for the new speech
+    speechBubble.style.animation = 'reveal-text 0.5s ease-out 0s forwards';
+}
+
+function removeSpeechDialogues() {
+    
+    // Continue with any other actions for starting the journey
+    window.location.href = 'pokemon.html';
 }

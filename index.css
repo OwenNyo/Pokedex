@@ -1,0 +1,179 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.pokeball-container {
+    position: relative;
+}
+
+.pokeball {
+    display: block;
+    position: relative;
+    width: 192px;
+    height: 192px;
+    background: radial-gradient(
+        #e6e6e6 16px,
+        #4d4d4d 17px 18px,
+        #e6e6e6 19px 24px,
+        #4d4d4d 25px 32px,
+        transparent 33px
+    ),
+    linear-gradient(to bottom, #e60000 0 80px, #4d4d4d 81px 96px, #ffffff 97px 100%);
+    border-radius: 50%;
+    border: 8px solid #4d4d4d;
+    box-shadow: 
+        0 0 8px rgba(0, 0, 0, 0.2),
+        inset 4px 4px 8px rgba(255, 255, 255, 0.5),
+        inset -4px -4px 8px rgba(0, 0, 0, 0.5);
+    animation: fall 0.5s ease-in-out 1s,
+        shake 1.25s cubic-bezier(0.36, 0.07, 0.19, 0.97) 1.5s 3,
+        catch 0.5s ease-out 4.25s forwards,
+        fade-out 0.5s ease-out 5.5s forwards,
+        show-mew 0s 6s forwards;
+}
+
+/* Animation */
+@keyframes shake {
+    0% {
+        transform: translateX(0) rotate(0);
+    }
+    20% {
+        transform: translateX(-10px) rotate(-20deg);
+    }
+    30% {
+        transform: translateX(10px) rotate(20deg);
+    }
+    50% {
+        transform: translateX(-10px) rotate(-10deg);
+    }
+    60% {
+        transform: translateX(10px) rotate(10deg);
+    }
+    100% {
+        transform: translateX(0) rotate(0);
+    }
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(-200%);
+    }
+    60% {
+        transform: translateY(0);
+    }
+    80% {
+        transform: translateY(-10%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.explosion {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, #e60000 0%, transparent 50%);
+    animation: 
+        expand 0.5s ease-out 5.5s forwards,
+        fade-out 0.5s ease-out 5.75s forwards;
+}
+
+@keyframes expand {
+    0% {
+        width: 0;
+        height: 0;
+    }
+    100% {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.neumorphic-container {
+    height: 300px;
+    width: 300px;
+    background: #f0f0f0;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 10px 10px 30px #d1d1d1, -10px -10px 30px #ffffff;
+    margin-top: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    opacity: 0;
+    animation: fade-in 0.5s ease-out 6s forwards;
+}
+
+.pokemon-image {
+    width: 200px;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.speech-bubble {
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 5px 5px 15px #d1d1d1, -5px -5px 15px #ffffff;
+    text-align: center;
+    max-width: 300px;
+    cursor: pointer;
+}
+
+@keyframes reveal-text {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.neumorphic-button {
+    display: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 10px;
+    background: #f0f0f0;
+    box-shadow: 5px 5px 15px #d1d1d1, -5px -5px 15px #ffffff;
+    border: none;
+    outline: none;
+}
