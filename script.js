@@ -43,6 +43,14 @@ window.onload = async function() {
         await getPokemonDataSet(i);
     }
 
+    // Check if all API calls have been completed before showing the button
+    const allApisLoaded = Object.keys(pokemondataset).length === pokemonCount;
+
+    if (allApisLoaded) {
+        const neumorphicButton = document.getElementById('finishButton');
+        neumorphicButton.style.display = 'block';
+    }
+
     renderPageStructure();
 }
 
