@@ -215,15 +215,9 @@ function showNextSpeech() {
         speechBubble.innerHTML = speeches[speechIndex];
         speechIndex++;
     } else {
-        // If all speeches are shown, hide speech dialogues and show the button
         neumorphicContainer.removeChild(speechBubble);
-        
-        // Check if all APIs are loaded before showing the button
-        const allApisLoaded = Object.keys(pokemondataset).length === pokemonCount;
+        finishButton.style.display = 'block';
 
-        if (allApisLoaded) {
-            finishButton.style.display = 'block';
-        }
     }
 
     // Trigger animation for the new speech
