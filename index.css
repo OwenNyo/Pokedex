@@ -181,6 +181,43 @@ body {
     filter:grayscale(100%);
 }
 
+/* Back of Card */
+.pokemon-container-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    perspective: 1000px; /* Adjust the perspective value as needed */
+}
+
+.pokemon-front,
+.pokemon-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+}
+
+.pokemon-back {
+    display: none;
+}
+
+.pokemon-container.flip .pokemon-container-inner {
+    transform: rotateY(180deg);
+}
+
+.pokemon-container.flip .pokemon-front {
+    display: none;
+}
+
+.pokemon-container.flip .pokemon-back {
+    display: block;
+    transform: rotateY(180deg);
+}
+
 /* Keyframe animations */
 
 @keyframes fade-in {

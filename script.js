@@ -202,6 +202,13 @@ window.onload = function() {
     document.getElementById('rand-id').innerHTML = trainerid;
 }
 
+// Add your JavaScript here
+const pokemonContainer = document.getElementById('pokemonContainer');
+
+pokemonContainer.addEventListener('click', function () {
+    this.classList.toggle('flip');
+});
+
 
 
 // Reusable functions
