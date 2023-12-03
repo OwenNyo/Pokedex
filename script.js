@@ -202,15 +202,6 @@ window.onload = function() {
     document.getElementById('rand-id').innerHTML = trainerid;
 }
 
-// Add your JavaScript here
-const pokemonContainer = document.getElementById('pokemonContainer');
-
-pokemonContainer.addEventListener('click', function () {
-    this.classList.toggle('flip');
-});
-
-
-
 // Reusable functions
 function capitalize(str) {
     if (typeof str === 'undefined' || str === null) {
@@ -224,3 +215,10 @@ function capitalize(str) {
     // Split the string by commas, capitalize each word, and join them back together
     return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join("<br>");
 }
+
+// Add JavaScript code to toggle the 'flipped' class on click
+const containerInner = document.querySelector('.pokemon-container-inner');
+
+containerInner.addEventListener('click', function () {
+    this.classList.toggle('flipped');
+});

@@ -3,6 +3,7 @@ body {
     place-items: center;
     min-height: 100vh;
     background: #ffffff;
+    overflow: hidden;
 }
 
 .pokeball-container {
@@ -48,20 +49,26 @@ body {
 }
 
 .pokemon-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    perspective: 1000px; /* Adjust the perspective value as needed */
+}
+
+.pokemon-container-inner {
     height: 400px;
     width: 500px;
     background: #5090e0;
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 10px 10px 30px #d1d1d1, -10px -10px 30px #ffffff;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
     opacity: 0;
     animation: fade-in 0.5s ease-out 6s forwards;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
 }
 
 
@@ -181,15 +188,13 @@ body {
     filter:grayscale(100%);
 }
 
-/* Back of Card */
+/* back */
 .pokemon-container-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.8s;
-    transform-style: preserve-3d;
-    perspective: 1000px; /* Adjust the perspective value as needed */
+    transition: transform 0.5s;
+}
+
+.pokemon-container-inner.flipped {
+    transform: rotateY(180deg);
 }
 
 .pokemon-front,
@@ -197,7 +202,6 @@ body {
     position: absolute;
     width: 100%;
     height: 100%;
-    -webkit-backface-visibility: hidden; /* Safari */
     backface-visibility: hidden;
 }
 
@@ -205,18 +209,20 @@ body {
     display: none;
 }
 
-.pokemon-container.flip .pokemon-container-inner {
-    transform: rotateY(180deg);
+.pokemon-back-content {
+    display: flex;
+    justify-content: center;
+    transform: rotateY(180deg); /* Rotate only the outer container */
 }
 
-.pokemon-container.flip .pokemon-front {
+.pokemon-container-inner.flipped .pokemon-front {
     display: none;
 }
 
-.pokemon-container.flip .pokemon-back {
+.pokemon-container-inner.flipped .pokemon-back {
     display: block;
-    transform: rotateY(180deg);
 }
+
 
 /* Keyframe animations */
 
