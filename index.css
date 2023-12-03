@@ -50,7 +50,7 @@ body {
 .pokemon-container {
     height: 400px;
     width: 500px;
-    background: #009fe1;
+    background: #6495ED;
     border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), 10px 10px 30px #d1d1d1, -10px -10px 30px #ffffff;
     position: absolute;
@@ -62,6 +62,7 @@ body {
     align-items: center;
     opacity: 0;
     animation: fade-in 0.5s ease-out 6s forwards;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 
@@ -79,7 +80,6 @@ body {
 }
 
 .pokemon-title {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     font-weight: 700;
     color: #d1d1d1;
 }
@@ -103,7 +103,7 @@ body {
 .pokemon-info-id{
     width: 200px;
     height: 250px;
-    margin-top: -8px;
+    margin-top: -7px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -125,7 +125,7 @@ body {
 }
 
 .trainer-id {
-    width: 180px;
+    width: 150px;
     height: 30px;
     font-size: 15px;
     padding: 0 5px;
@@ -150,8 +150,25 @@ body {
 }
 
 .trainer-sprite-red {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
+}
+
+.pokemon-info-badges {
+    width: 500px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.trainer-badge-container {
+    height:30px;
+    border: 1px solid #4d4d4d;
+}
+.trainer-badges {
+    width: 30px;
+    height: 30px;   
+    filter:grayscale(100%);
 }
 
 /* Keyframe animations */
