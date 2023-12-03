@@ -182,7 +182,29 @@ function renderPageStructure() {
     }
 }
 
+//index.html 
+window.onload = function() {
+    setInterval(function(){
+        var date = new Date();
+        var displayDate = date.toLocaleDateString();
+        var displayTime = date.toLocaleTimeString();
 
+        document.getElementById('trainer-time').innerHTML = displayTime;
+        document.getElementById('trainer-date').innerHTML = displayDate;
+    }, 1000); // 1000 milliseconds = 1 second
+
+    function getRandomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    var trainerid = getRandomNumber(1, 99999);
+
+    document.getElementById('rand-id').innerHTML = trainerid;
+}
+
+
+
+// Reusable functions
 function capitalize(str) {
     if (typeof str === 'undefined' || str === null) {
         return '';  // Return an empty string if the input is undefined or null
@@ -194,38 +216,4 @@ function capitalize(str) {
 
     // Split the string by commas, capitalize each word, and join them back together
     return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join("<br>");
-}
-
-
-// Index.html (Landing Page scripts)
-let speechIndex = 0; // Index for tracking the current speech
-
-function showNextSpeech() {
-    const speechBubble = document.getElementById('speechBubble');
-    const neumorphicContainer = document.getElementById('neumorphicContainer');
-    const finishButton = document.getElementById('finishButton');
-    const speeches = [
-        "People affectionately refer to me as the Pokémon Professor.",
-        "This world is inhabited far and wide by creatures called Pokémon.",
-        "For some people, Pokémon are pets. Others use them for battling.",
-        "As for myself, I study Pokémon as a profession.",
-    ];
-
-    if (speechIndex < speeches.length) {
-        speechBubble.innerHTML = speeches[speechIndex];
-        speechIndex++;
-    } else {
-        neumorphicContainer.removeChild(speechBubble);
-        finishButton.style.display = 'block';
-
-    }
-
-    // Trigger animation for the new speech
-    speechBubble.style.animation = 'reveal-text 0.5s ease-out 0s forwards';
-}
-
-function removeSpeechDialogues() {
-    
-    // Continue with any other actions for starting the journey
-    window.location.href = 'pokemon.html';
 }
