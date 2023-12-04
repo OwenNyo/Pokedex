@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+    <head> 
+        <meta charset="UTF-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <title>Pokemon Next Generation</title>
+        <link rel="stylesheet" href="styles.css">
+        <script src="moves_api.js" defer></script>
+    </head>
+    <body>
+        <nav class="DexNav">
+            <div class="DexNav-logo">
+                <a>
+                    <img class= "logo_pokemon" src="./assets/Pokemon_Logo.png" alt="">
+                </a>
+            </div>
+            <div class="DexNav-gen">
+                <span>Generational</span>
+            </div>
+            <ul class="DexNav-list">
+                <li class="DexNav-list-pokemon">
+                    <a class="DexNavButton">
+                        <img class="DexNavButton-image" src="./assets/logo_pokeball.png" alt="">
+                        <div class="DexNavButton-content">Pokemon</div>
+                    </a>
+                </li>
+                <li class="DexNav-list-moves">
+                    <a class="DexNavButton">
+                        <img class="DexNavButton-image" src="./assets/logo_moves.png" alt="">
+                        <div class="DexNavButton-content">Moves</div>
+                    </a>
+                </li>
+                <li class="DexNav-list-abilities">
+                    <a class="DexNavButton">
+                        <img class="DexNavButton-image" src="./assets/logo_abilities.png" alt="">
+                        <div class="DexNavButton-content">Abilities</div>
+                    </a>
+                </li>
+                <li class="DexNav-list-items">
+                    <a class="DexNavButton">
+                        <img class="DexNavButton-image" src="./assets/logo_items.png" alt="">
+                        <div class="DexNavButton-content">Items</div>
+                    </a>
+                </li>
+                <li class="DexNav-list-type">
+                    <a class="DexNavButton">
+                        <img class="DexNavButton-image" src="./assets/logo_types.png" alt="">
+                        <div class="DexNavButton-content">Type</div>
+                    </a>
+                </li>
+            </ul>
+            <div class="light-dark-toggle" id="modeToggle">
+                <img class="light-indicator premier-sprite active-mode" src="./assets/logo_premier.png">
+                <img class="dark-indicator luxury-sprite" src="./assets/logo_luxury.png">
+            </div>
+        </nav>
+        <div class="DexContent light-mode">
+            <h2>Welcome to the Pokemon Dex!</h2>
+            <p>
+                Explore the world of Pokemon with our comprehensive Pokedex. Whether you're looking for information on Pokemon, moves, abilities, items, or types, we've got you covered!
+            </p>
+            
+            <h3>Featured Pokemon</h3>
+            <p>
+                Check out some of the amazing Pokemon from Generation 8 below:
+            </p>
+            <table class="DexTable">
+                <thead class="DexTable-head">
+                </thead>
+                <tbody class="DexTable-body">
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
