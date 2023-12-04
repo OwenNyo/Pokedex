@@ -137,6 +137,9 @@ function PokemonHTMLStructure(pokemon) {
 function renderPageStructure() {
     const currentPage = window.location.pathname;
 
+    // Delay between rows
+    const delayBetweenRows = 50;
+
     // Clear existing content in the table body
     DexTableBody.innerHTML = '';
 
@@ -149,8 +152,6 @@ function renderPageStructure() {
                 <th>Abilities</th>
                 <th>Hidden Abilities</th>
             </tr>`;
-
-        const delayBetweenRows = 50; // Adjust the delay between rows in milliseconds
 
         for (let i = 1; i <= pokemonCount; i++) {
             let pokemonData = pokemondataset[i];
