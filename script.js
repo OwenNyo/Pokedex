@@ -1,33 +1,8 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const modeToggle = document.getElementById("modeToggle");
-
-    // Set light mode as active on page load
-    modeToggle.classList.add("light-mode");
-
-    modeToggle.addEventListener("click", function () {
-        // Toggle between light and dark mode on click
-        modeToggle.classList.toggle("light-mode");
-        modeToggle.classList.toggle("dark-mode");
-        
-        // Update the active-mode class on indicators based on the current mode
-        const lightIndicator = document.querySelector(".light-indicator");
-        const darkIndicator = document.querySelector(".dark-indicator");
-
-        lightIndicator.classList.toggle("active-mode");
-        darkIndicator.classList.toggle("active-mode");
-
-        // Toggle dark mode class on the DexContent section
-        const dexContent = document.querySelector(".DexContent");
-        dexContent.classList.toggle("dark-mode");
-
-        // Toggle dark mode class on the body only
-        document.body.classList.toggle("dark-mode");
-
-    });
-});
-
 let DexTableHead = document.querySelector(".DexTable-head");
 let DexTableBody = document.querySelector(".DexTable-body")
+
+const containerInner = document.querySelector('.pokemon-container-inner');
+
 
 // Counter at 1017
 const pokemonCount = 1017;
@@ -36,8 +11,10 @@ const pokemonCount = 1017;
 var pokemondataset = {};
 var movedataset = {};
 
-// On page load, render the different api calls
-window.onload = async function() {
+// On Page Load function
+window.onload = async function() {  
+
+    // API Calls
     for (let i = 1; i <= pokemonCount; i++)
     {
         await getPokemonDataSet(i);
@@ -46,7 +23,8 @@ window.onload = async function() {
     renderPageStructure();
 }
 
-// Pokemon Data Set API
+
+// Pokemon.html API
 async function getPokemonDataSet(num) {
     // Fetch url for pokemon api
     let url = "https://pokeapi.co/api/v2/pokemon/" + num.toString();
@@ -82,7 +60,7 @@ async function getPokemonDataSet(num) {
     };
 }
 
-// Defines table structure
+// Pokemon.html Table Structure
 function PokemonHTMLStructure(pokemon) {
     // Helper function to generate the CSS class for each typing
     function getTypeClass(type) {
@@ -152,11 +130,11 @@ function PokemonHTMLStructure(pokemon) {
         <td class="DexTable-data">${pokemon.hidden_ability ? capitalize(pokemon.hidden_ability.toString()) : ''}</td>
     </tr>`;
 
-    // Assuming DexTableBody is your table body element
     return pokemonRow;
 }
 
-// Loads different table structure based on the page
+
+// Rendering Page Structure
 function renderPageStructure() {
     const currentPage = window.location.pathname;
 
@@ -182,27 +160,7 @@ function renderPageStructure() {
     }
 }
 
-//index.html 
-window.onload = function() {
-    setInterval(function(){
-        var date = new Date();
-        var displayDate = date.toLocaleDateString();
-        var displayTime = date.toLocaleTimeString();
-
-        document.getElementById('trainer-time').innerHTML = displayTime;
-        document.getElementById('trainer-date').innerHTML = displayDate;
-    }, 1000); // 1000 milliseconds = 1 second
-
-    function getRandomNumber(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    var trainerid = getRandomNumber(1, 99999);
-
-    document.getElementById('rand-id').innerHTML = trainerid;
-}
-
-// Reusable functions
+// Reusable Function
 function capitalize(str) {
     if (typeof str === 'undefined' || str === null) {
         return '';  // Return an empty string if the input is undefined or null
@@ -216,9 +174,59 @@ function capitalize(str) {
     return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join("<br>");
 }
 
-// Add JavaScript code to toggle the 'flipped' class on click
-const containerInner = document.querySelector('.pokemon-container-inner');
 
+
+// Index.html
+function rotateBalls(event) {
+    const scaleFactor = 1 / 20;
+    const balls = document.querySelectorAll(".ball");
+    const x = event.clientX * scaleFactor;
+    const y = event.clientY * scaleFactor;
+  
+    for (let i = 0; i < balls.length; ++i) {
+      const isOdd = i % 2 !== 0;
+      const boolInt = isOdd ? -1 : 1;
+      balls[i].style.transform = `translate(${x * boolInt}px, ${
+        y * boolInt
+      }px) rotate(${x * boolInt * 10}deg)`;
+    }
+}
+
+
+// Light Dark Toggle
+document.addEventListener("DOMContentLoaded", function () {
+    const modeToggle = document.getElementById("modeToggle");
+
+    // Set light mode as active on page load
+    modeToggle.classList.add("light-mode");
+
+    modeToggle.addEventListener("click", function () {
+        // Toggle between light and dark mode on click
+        modeToggle.classList.toggle("light-mode");
+        modeToggle.classList.toggle("dark-mode");
+        
+        // Update the active-mode class on indicators based on the current mode
+        const lightIndicator = document.querySelector(".light-indicator");
+        const darkIndicator = document.querySelector(".dark-indicator");
+
+        lightIndicator.classList.toggle("active-mode");
+        darkIndicator.classList.toggle("active-mode");
+
+        // Toggle dark mode class on the DexContent section
+        const dexContent = document.querySelector(".DexContent");
+        dexContent.classList.toggle("dark-mode");
+
+        // Toggle dark mode class on the body only
+        document.body.classList.toggle("dark-mode");
+
+    });
+});
+
+// Ball rotation
+document.addEventListener("mousemove", rotateBalls);
+
+// Card Flip
 containerInner.addEventListener('click', function () {
     this.classList.toggle('flipped');
 });
+

@@ -8,6 +8,7 @@ body {
 
 .pokeball-container {
     position: relative;
+    z-index: 1;
 }
 
 .pokeball {
@@ -189,10 +190,6 @@ body {
 }
 
 /* back */
-.pokemon-container-inner {
-    transition: transform 0.5s;
-}
-
 .pokemon-container-inner.flipped {
     transform: rotateY(180deg);
 }
@@ -221,6 +218,65 @@ body {
 
 .pokemon-container-inner.flipped .pokemon-back {
     display: block;
+}
+
+/* Pokeball Shapes & Sprites*/
+.ball {
+    width: 41px;
+    height: 41px;
+    background-image: url(https://assets.codepen.io/13471/pokeballs.png);
+    background-position: 0 0;
+    transform-origin: center bottom;
+    position: fixed;
+    z-index: 0;
+}
+
+.great.ball {
+    background-position: -41px;
+    top: 10vh;
+    left: 5vw;
+}
+
+.ultra.ball{
+    background-position-x: -123px;
+    top: 10vh;
+    left: 48.5vw;
+}
+
+.master.ball {
+    background-position-x: -164px;
+    top: 10vh;
+    left: 90vw;
+}
+
+.safari.ball {
+    background-position-x: -82px;
+    top: 50vh;
+    left: 5vw;
+}
+
+.net.ball {
+    background-position-x: -205px;
+    top: 50vh;
+    left: 90vw;
+}
+
+.quick.ball {
+    background-position-x: -574px;
+    top: 90vh;
+    left: 5vw;
+}
+
+.cherish.ball {
+    background-position-x: -615px;
+    top: 90vh;
+    left: 48.5vw;
+}
+
+.love.ball {
+    background-position-x: -820px;
+    top: 90vh;
+    left: 90vw;
 }
 
 
