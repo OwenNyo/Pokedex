@@ -134,9 +134,6 @@ function PokemonHTMLStructure(pokemon) {
 function renderPageStructure() {
     const currentPage = window.location.pathname;
 
-    // Delay between rows
-    const delayBetweenRows = 50;
-
     // Clear existing content in the table body
     DexTableBody.innerHTML = '';
 
@@ -150,17 +147,22 @@ function renderPageStructure() {
                 <th>Hidden Abilities</th>
             </tr>`;
 
+        // Delay between rows
+        const delayBetweenRows = 50;
+        let cumulativeDelay = 0;
+
         for (let i = 1; i <= pokemonCount; i++) {
             let pokemonData = pokemondataset[i];
             let html = PokemonHTMLStructure(pokemonData);
 
             // Use setTimeout to add rows with a delay
-            setTimeout(() => {DexTableBody.innerHTML += html;}, i * delayBetweenRows);
+            setTimeout(() => {
+                DexTableBody.innerHTML += html;
+            }, cumulativeDelay);
+
+            cumulativeDelay += delayBetweenRows;
         }
     } 
-    else if (currentPage.includes("moves.html")) {
-        // Load Moves HTML structure
-    }
 }
 
 // Capitalize Function
