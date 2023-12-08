@@ -6,7 +6,6 @@ const pokemonCount = 1017;
 
 // Variables for the different api calls
 var pokemondataset = {};
-var movedataset = {};
 
 // On Page Load function
 window.onload = fetchDataAndRenderPage;
@@ -20,7 +19,7 @@ async function fetchDataAndRenderPage() {
     renderPageStructure();
 }
 
-// Pokemon.html API
+// Pokemon Variable Set
 async function getPokemonDataSet(num) {
     // Fetch url for pokemon api
     let url = "https://pokeapi.co/api/v2/pokemon/" + num.toString();
@@ -56,7 +55,7 @@ async function getPokemonDataSet(num) {
     };
 }
 
-// Pokemon.html Table Structure
+// Table Structure
 function PokemonHTMLStructure(pokemon) {
     // Helper function to generate the CSS class for each typing
     const getTypeClass = (type) => {
@@ -129,7 +128,7 @@ function PokemonHTMLStructure(pokemon) {
     return pokemonRow;
 }
 
-// Rendering Page Structure
+// Rendering Table Structure
 function renderPageStructure() {
     // Clear existing content in the table body
     while (DexTableBody.firstChild) {
