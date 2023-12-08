@@ -1,5 +1,4 @@
-const DexTableHead = document.querySelector(".DexTable-head");
-const DexTableBody = document.querySelector(".DexTable-body");
+const DexTable = document.querySelector(".DexTable");
 
 // Counter at 1017
 const pokemonCount = 1017;
@@ -107,23 +106,49 @@ function PokemonHTMLStructure(pokemon) {
     // In your code wherever you render the Pokémon in the table
     const hasSecondType = pokemon.types.length > 1;
 
-    const pokemonRow = `
-    <tr class="DexTable-row">
-        <td class="DexTable-data">
-            <div class = "DexTable-data-container">
-                <img class="DexTable-data-logo" src="${pokemon.sprite}">
-                <span>${capitalize(pokemon.name.toString())}</span>
-            </div>
-        </td>
-        <td class="DexTable-data">
-            <div class = "DexTable-data-container">
+    const pokemonRow = 
+    `<div class="DexTable-container"> 
+        <div class="DexTable-container-img">
+            <img class="pokemon_image" src="${pokemon.sprite}">
+        </div>
+        <div class="DexTable-container-name">
+            <span>${capitalize(pokemon.name.toString())}</span>
+        </div>
+        <div class="DexTable-container-type">
             <span class="${getTypeStyles(pokemon.types[0], true, hasSecondType)} type_text">${capitalize(pokemon.types[0].toString())}</span>
             ${hasSecondType ? `<span class="${getTypeStyles(pokemon.types[1], false, true)} type_text">${capitalize(pokemon.types[1].toString())}</span>` : ''}
+        </div>
+        <div class="DexTable-container-abilities">
+            <div class="pokemon_ability">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Regular Abilities</th>
+                        </tr>
+                    <thead>
+                    <tbody>
+                        <tr>
+                            <td>${capitalize(pokemon.regular_abilities.toString())}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </td>
-        <td class="DexTable-data">${capitalize(pokemon.regular_abilities.toString())}</td>
-        <td class="DexTable-data">${pokemon.hidden_ability ? capitalize(pokemon.hidden_ability.toString()) : ''}</td>
-    </tr>`;
+            <div class="pokemon_hidden_ability">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hidden Abilities</th>
+                        </tr>
+                    <thead>
+                    <tbody>
+                        <tr>
+                            <td>${pokemon.hidden_ability ? capitalize(pokemon.hidden_ability.toString()) : ''}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>`
 
     return pokemonRow;
 }
@@ -131,19 +156,9 @@ function PokemonHTMLStructure(pokemon) {
 // Rendering Table Structure
 function renderPageStructure() {
     // Clear existing content in the table body
-    while (DexTableBody.firstChild) {
-        DexTableBody.removeChild(DexTableBody.firstChild);
+    while (DexTable.firstChild) {
+        DexTable.removeChild(DexTable.firstChild);
     }
-
-    // Append Header Row
-    const headerRow = document.createElement("tr");
-    headerRow.innerHTML = `
-        <th>Pokemon</th>
-        <th>Type</th>
-        <th>Abilities</th>
-        <th>Hidden Abilities</th>
-    `;
-    DexTableHead.appendChild(headerRow);
 
     const delayBetweenRows = 50;
 
@@ -153,9 +168,9 @@ function renderPageStructure() {
 
         // Use setTimeout to add rows with a delay
         setTimeout(() => {
-            const row = document.createElement("tr");
-            row.innerHTML = html;
-            DexTableBody.appendChild(row);
+            const container = document.createElement("div");
+            container.innerHTML = html;
+            DexTable.appendChild(container);
         }, delayBetweenRows * i);
     }
 }

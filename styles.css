@@ -209,34 +209,79 @@ body {
 }
 
 .DexTable {
-    width: 100%;
+    width: 1200px;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.DexTable-data {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-    font-size: 13px;
+/* Experimental Transition */
+.DexTable-container {
+    height: 300px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    background-color: #AFDBF6;  
+    border-radius: 20px;
+    padding: 10px;
 }
 
-.DexTable th{
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-    font-size: 15px;
-}
-
-.DexTable-data-container {
-    display : flex; 
+.DexTable-container-img {
+    height: 150px;
+    width: 150px;
+    background: rgba(255,255,255,0.60);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
 
-.DexTable-data-logo {
-    height: 35px;
-    width: 35px;
+.pokemon_image {
+    height: 100px;
+    width: 100px;
 }
+
+.DexTable-container-name {
+    height: 30px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.DexTable-container-type {
+    height: 30px;
+    width: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.DexTable-container-abilities {
+    height: 40px;
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.pokemon_ability {
+    display: flex;
+    flex-direction: column;
+}
+
+.pokemon_hidden_ability {
+    display: flex;
+    flex-direction: column;
+}
+
+
 
 /* Define type colors and borders */
 .type-normal {
