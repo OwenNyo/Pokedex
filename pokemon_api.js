@@ -1,5 +1,5 @@
-let DexTableHead = document.querySelector(".DexTable-head");
-let DexTableBody = document.querySelector(".DexTable-body")
+const DexTableHead = document.querySelector(".DexTable-head");
+const DexTableBody = document.querySelector(".DexTable-body");
 
 // Counter at 1017
 const pokemonCount = 1017;
@@ -9,17 +9,16 @@ var pokemondataset = {};
 var movedataset = {};
 
 // On Page Load function
-window.onload = async function() {  
+window.onload = fetchDataAndRenderPage;
 
-    // API Calls
-    for (let i = 1; i <= pokemonCount; i++)
-    {
+// Fetch Data and Render Page
+async function fetchDataAndRenderPage() {
+    for (let i = 1; i <= pokemonCount; i++) {
         await getPokemonDataSet(i);
     }
-
+    
     renderPageStructure();
 }
-
 
 // Pokemon.html API
 async function getPokemonDataSet(num) {
@@ -60,7 +59,7 @@ async function getPokemonDataSet(num) {
 // Pokemon.html Table Structure
 function PokemonHTMLStructure(pokemon) {
     // Helper function to generate the CSS class for each typing
-    function getTypeClass(type) {
+    const getTypeClass = (type) => {
         // Default class for unknown types
         const defaultClass = 'type-default';
 
@@ -91,7 +90,7 @@ function PokemonHTMLStructure(pokemon) {
     }
 
     // Helper function to generate the CSS styles for each typing
-    function getTypeStyles(type, isFirstType, hasSecondType) {
+    const getTypeStyles = (type, isFirstType, hasSecondType) => {
         let classList = `border-radius ${getTypeClass(type)}`;
 
         // Apply different border radius based on whether it's the first or second type
@@ -132,37 +131,34 @@ function PokemonHTMLStructure(pokemon) {
 
 // Rendering Page Structure
 function renderPageStructure() {
-    const currentPage = window.location.pathname;
-
     // Clear existing content in the table body
-    DexTableBody.innerHTML = '';
+    while (DexTableBody.firstChild) {
+        DexTableBody.removeChild(DexTableBody.firstChild);
+    }
 
-    // Check if the current page is pokemon.html or moves.html
-    if (currentPage.includes("pokemon.html")) {
-        DexTableHead.innerHTML += 
-            `<tr>
-                <th>Pokemon</th>
-                <th>Type</th>
-                <th>Abilities</th>
-                <th>Hidden Abilities</th>
-            </tr>`;
+    // Append Header Row
+    const headerRow = document.createElement("tr");
+    headerRow.innerHTML = `
+        <th>Pokemon</th>
+        <th>Type</th>
+        <th>Abilities</th>
+        <th>Hidden Abilities</th>
+    `;
+    DexTableHead.appendChild(headerRow);
 
-        // Delay between rows
-        const delayBetweenRows = 50;
-        let cumulativeDelay = 0;
+    const delayBetweenRows = 50;
 
-        for (let i = 1; i <= pokemonCount; i++) {
-            let pokemonData = pokemondataset[i];
-            let html = PokemonHTMLStructure(pokemonData);
+    for (let i = 1; i <= pokemonCount; i++) {
+        let pokemonData = pokemondataset[i];
+        let html = PokemonHTMLStructure(pokemonData);
 
-            // Use setTimeout to add rows with a delay
-            setTimeout(() => {
-                DexTableBody.innerHTML += html;
-            }, cumulativeDelay);
-
-            cumulativeDelay += delayBetweenRows;
-        }
-    } 
+        // Use setTimeout to add rows with a delay
+        setTimeout(() => {
+            const row = document.createElement("tr");
+            row.innerHTML = html;
+            DexTableBody.appendChild(row);
+        }, delayBetweenRows * i);
+    }
 }
 
 // Capitalize Function
