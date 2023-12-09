@@ -34,7 +34,8 @@ async function getPokemonDataSet(num) {
     let abilities = pokemon["abilities"];
     let regularAbilities = [];
     let hiddenAbilities = [];
-    let pokemonLogo = pokemon["sprites"].front_default;
+    let normal_sprite = pokemon["sprites"].front_default;
+    let shiny_sprite = pokemon["sprites"].front_shiny;
 
     abilities.forEach(ability => {
         let abilityName = ability.ability.name;
@@ -50,7 +51,8 @@ async function getPokemonDataSet(num) {
         "types": pokemonType,
         "regular_abilities": regularAbilities,
         "hidden_ability": hiddenAbilities,
-        "sprite" : pokemonLogo
+        "n_sprite" : normal_sprite,
+        "s_sprite" : shiny_sprite
     };
 }
 
@@ -109,7 +111,13 @@ function PokemonHTMLStructure(pokemon) {
     const pokemonRow = 
     `<div class="DexTable-container"> 
         <div class="DexTable-container-img">
-            <img class="pokemon_image" src="${pokemon.sprite}">
+            <img 
+            class="pokemon_image" 
+            src="${pokemon.n_sprite}" 
+            data-normal-sprite="${pokemon.n_sprite}" 
+            data-shiny-sprite="${pokemon.s_sprite}" 
+            data-is-shiny="false"
+            onclick="toggleSprite(this)">
         </div>
         <div class="DexTable-container-name">
             <span>${capitalize(pokemon.name.toString())}</span>
@@ -160,18 +168,14 @@ function renderPageStructure() {
         DexTable.removeChild(DexTable.firstChild);
     }
 
-    const delayBetweenRows = 50;
-
     for (let i = 1; i <= pokemonCount; i++) {
         let pokemonData = pokemondataset[i];
         let html = PokemonHTMLStructure(pokemonData);
 
-        // Use setTimeout to add rows with a delay
-        setTimeout(() => {
-            const container = document.createElement("div");
-            container.innerHTML = html;
-            DexTable.appendChild(container);
-        }, delayBetweenRows * i);
+        // Create a container and append it to the table
+        const container = document.createElement("div");
+        container.innerHTML = html;
+        DexTable.appendChild(container);
     }
 }
 
@@ -187,6 +191,14 @@ function capitalize(str) {
 
     // Split the string by commas, capitalize each word, and join them back together
     return str.split(',').map(word => word.charAt(0).toUpperCase() + word.slice(1).trim()).join("<br>");
+}
+
+function toggleSprite(element) {
+    const isShiny = element.dataset.isShiny === "true";
+    const sprite = isShiny ? element.dataset.normalSprite : element.dataset.shinySprite;
+
+    element.src = sprite;
+    element.dataset.isShiny = (!isShiny).toString();
 }
 
 

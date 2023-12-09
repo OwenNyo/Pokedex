@@ -240,15 +240,24 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    transition: background-size 0.3s ease;
+}
+
+.DexTable-container-img:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
 }
 
 .pokemon_image {
     height: 100px;
     width: 100px;
+    max-width: 100%;
 }
 
 .DexTable-container-name {
-    height: 30px;
+    height: 40px;
     width: 300px;
     display: flex;
     justify-content: center;
@@ -264,7 +273,7 @@ body {
 }
 
 .DexTable-container-abilities {
-    height: 40px;
+    height: 50px;
     width: 300px;
     display: flex;
     flex-direction: row;
