@@ -13,7 +13,7 @@ window.onload = fetchDataAndRenderPage;
 async function fetchDataAndRenderPage() {
     
     for (let i = 1; i <= pokemonCount; i++) {
-        getPokemonDataSet(i);
+        await getPokemonDataSet(i);
     }
     
     renderPageStructure();
