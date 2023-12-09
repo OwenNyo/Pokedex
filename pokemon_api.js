@@ -164,19 +164,18 @@ function PokemonHTMLStructure(pokemon) {
 
 // Rendering Table Structure
 function renderPageStructure() {
-    // Clear existing content in the table body
-    while (DexTable.firstChild) {
-        DexTable.removeChild(DexTable.firstChild);
-    }
-
     for (let i = 1; i <= pokemonCount; i++) {
         let pokemonData = pokemondataset[i];
-        let html = PokemonHTMLStructure(pokemonData);
 
-        // Create a container and append it to the table
-        const container = document.createElement("div");
-        container.innerHTML = html;
-        DexTable.appendChild(container);
+        // Check if data exists before rendering
+        if (pokemonData) {
+            let html = PokemonHTMLStructure(pokemonData);
+
+            // Create a container and append it to the table
+            const container = document.createElement("div");
+            container.innerHTML = html;
+            DexTable.appendChild(container);
+        }
     }
 }
 
