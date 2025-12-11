@@ -48,18 +48,17 @@ export default function HomePage() {
         <div className="space-y-6 text-left">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-50">
             A clean, modern
-            <span className="block text-red-400">Pokédex dashboard.</span>
+            <span className="font-burger block text-red-400">Pokédex dashboard.</span>
           </h2>
 
           {/* Small memo */}
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
-            Quickly jump between Pokémon, moves, items and abilities with a
-            simple, focused interface. Built with React, Vite and Tailwind CSS.
+            Your not-so-official Smogon Universiuty for Pokémon, moves, items and abilities. But it's not Smogon University.
           </p>
 
           {/* Quick search */}
           <div className="mt-2 max-w-xl">
-            <label className="block text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">
+            <label className="font-burger block text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">
               Quick search
             </label>
             <div className="flex items-center gap-2 rounded-full bg-slate-900 border border-slate-700 px-3 py-2 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500/70 transition">
@@ -68,7 +67,7 @@ export default function HomePage() {
                 placeholder="Search a Pokémon by name or ID…"
                 className="flex-1 bg-transparent text-sm text-slate-100 placeholder:text-slate-500 outline-none"
               />
-              <span className="text-[11px] px-2 py-1 rounded-full bg-red-500 text-white font-medium">
+              <span className="font-burger text-[11px] px-2 py-1 rounded-full bg-red-500 text-white font-medium">
                 Soon
               </span>
             </div>
@@ -86,7 +85,7 @@ export default function HomePage() {
             </div>
             {/* Bottom */}
             <div className="bg-slate-900 pt-8 pb-4 px-5 text-left">
-              <p className="text-xs uppercase tracking-[0.25em] text-slate-400 mb-1">
+              <p className="font-burger text-xs uppercase tracking-[0.25em] text-slate-400 mb-1">
                 Trainer profile
               </p>
               <p className="text-sm text-slate-200">
@@ -100,7 +99,7 @@ export default function HomePage() {
 
       {/* Sections grid */}
       <section className="space-y-3">
-        <h3 className="text-lg font-semibold text-slate-100 text-center">
+        <h3 className="font-burger text-lg font-semibold text-slate-100 text-center">
           What do you want to explore today?
         </h3>
 
@@ -120,10 +119,10 @@ export default function HomePage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-semibold text-slate-50">
+                    <h4 className="font-burger text-sm font-semibold text-slate-50">
                       {section.title}
                     </h4>
-                    <span className="text-[10px] px-2 py-[2px] rounded-full bg-slate-950/70 border border-slate-700 text-slate-300 uppercase tracking-wide">
+                    <span className="font-burger text-[10px] px-2 py-[2px] rounded-full bg-slate-950/70 border border-slate-700 text-slate-300 uppercase tracking-wide">
                       {section.badge}
                     </span>
                   </div>
