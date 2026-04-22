@@ -178,21 +178,21 @@ export default function PokemonTab() {
         </div>
 
         {/* Pagination controls */}
-        <PokedexPagination
-          page={page}
-          maxPage={maxPage}
-          totalCount={totalCount}
-          pageInput={pageInput}
-          onPageInputChange={(e) => setPageInput(e.target.value)}
-          onPageInputKeyDown={handlePageInputKeyDown}
-          onGoToPage={goToPage}
-          onPrevPage={() => setPage((p) => Math.max(0, p - 1))}
-          onNextPage={() => setPage((p) => Math.min(maxPage, p + 1))}
-          loading={loading}
-          searchLoading={searchLoading}
-          isSearching={isSearching}
-          inputId="pokemon-page-input"
-        />
+        {!isSearching ? (
+          <PokedexPagination
+            page={page}
+            maxPage={maxPage}
+            totalCount={totalCount}
+            pageInput={pageInput}
+            onPageInputChange={(e) => setPageInput(e.target.value)}
+            onPageInputKeyDown={handlePageInputKeyDown}
+            onGoToPage={goToPage}
+            onPrevPage={() => setPage((p) => Math.max(0, p - 1))}
+            onNextPage={() => setPage((p) => Math.min(maxPage, p + 1))}
+            loading={loading}
+            inputId="pokemon-page-input"
+          />
+        ) : null}
       </div>
 
       {/* Show search mode notice */}
