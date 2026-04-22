@@ -219,43 +219,54 @@ export default function ItemsTab() {
         // Main item grid
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {filtered.map((item) => {
-            const id = getIdFromUrl(item.url);
-            const sprite = id
-              ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.name}.png`
-              : null;
+              const id = getIdFromUrl(item.url);
+              const sprite = id
+                ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.name}.png`
+                : null;
 
-            return (
-              <div
-                key={item.name}
-                className="rounded-xl border border-slate-800 bg-slate-950/30 p-4 hover:bg-slate-950/50 transition"
-              >
-                <div className="flex items-center gap-3">
-                  {/* Item image */}
-                  {sprite ? (
-                    <img
-                      src={sprite}
-                      alt={item.name}
-                      className="h-12 w-12 object-contain"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="h-12 w-12 rounded-lg bg-slate-800/40" />
-                  )}
+              return (
+                <div
+                  key={item.name}
+                  className="rounded-xl border border-slate-800 bg-slate-950/30 p-4 hover:bg-slate-950/50 transition"
+                >
+                  <div className="flex items-center gap-3">
+                    {/* Item image / fallback */}
+                    {sprite ? (
+                      <img
+                        src={sprite}
+                        alt={item.name}
+                        className="h-12 w-12 object-contain"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          const fallback = e.currentTarget.nextElementSibling;
+                          if (fallback) fallback.classList.remove("hidden");
+                        }}
+                      />
+                    ) : null}
 
-                  {/* Item info */}
-                  <div className="min-w-0">
-                    <div className="text-xs text-slate-400">
-                      #{id ? String(id).padStart(3, "0") : "???"}
+                    <div
+                      className={`${
+                        sprite ? "hidden" : ""
+                      } flex h-12 w-12 items-center justify-center rounded-lg bg-slate-800/40 text-sm text-slate-300`}
+                    >
+                      IT
                     </div>
 
-                    <div className="truncate text-slate-100 font-semibold">
-                      {capitalizeWords(item.name)}
+                    {/* Item info */}
+                    <div className="min-w-0">
+                      <div className="text-xs text-slate-400">
+                        #{id ? String(id).padStart(3, "0") : "???"}
+                      </div>
+
+                      <div className="truncate text-slate-100 font-semibold">
+                        {capitalizeWords(item.name)}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       )}
 
