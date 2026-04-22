@@ -1,9 +1,9 @@
 // src/components/pokemon/ItemsTab.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pokedex } from "pokeapi-js-wrapper";
+import PokedexPagination from "./PokedexPagination";
 
-// Create ONE shared API client
-// This prevents re-creating it every render and enables caching
+// Shared API client instance
 const P = new Pokedex({
   cache: true,
   timeout: 10_000,
@@ -11,12 +11,12 @@ const P = new Pokedex({
 
 // Extract item ID from API URL
 function getIdFromUrl(url) {
-  // url looks like: https://pokeapi.co/api/v2/item/1/
+  // Example: https://pokeapi.co/api/v2/item/1/
   const match = url.match(/\/item\/(\d+)\//);
   return match ? Number(match[1]) : null;
 }
 
-// Format item names nicely (e.g. "poke-ball" → "Poke Ball")
+// Format item name for display
 function capitalizeWords(text) {
   if (!text) return text;
   return text
@@ -26,27 +26,34 @@ function capitalizeWords(text) {
 }
 
 export default function ItemsTab() {
-  const LIMIT = 24; // number of items per page
+  const LIMIT = 24;
 
-  // Pagination state (which page we are on)
+  // Pagination state
   const [page, setPage] = useState(0);
+  const [pageInput, setPageInput] = useState("1");
 
-  // Search input state
+  // Search state
   const [query, setQuery] = useState("");
 
-  // UI states
+  // UI state
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // API data (stores count + results)
+  // Data state
   const [data, setData] = useState(null);
+  const [allItems, setAllItems] = useState([]);
 
-  // Used to prevent race conditions (outdated API responses)
+  // Request tracking
   const requestIdRef = useRef(0);
+  const searchRequestIdRef = useRef(0);
 
-  // 🔄 Fetch data whenever "page" changes
+  // Search mode is active whenever the user has typed something
+  const isSearching = query.trim().length > 0;
+
+  // Fetch paginated item list when page changes
   useEffect(() => {
-    let alive = true; // track if component is still mounted
+    let alive = true;
     const reqId = ++requestIdRef.current;
 
     async function load() {
@@ -54,15 +61,10 @@ export default function ItemsTab() {
       setErrorMsg("");
 
       try {
-        // Calculate offset for pagination
         const interval = { offset: page * LIMIT, limit: LIMIT };
-
-        // Fetch item list from API
         const res = await P.getItemsList(interval);
 
-        // Ignore outdated responses
         if (!alive || reqId !== requestIdRef.current) return;
-
         setData(res);
       } catch (err) {
         if (!alive || reqId !== requestIdRef.current) return;
@@ -75,39 +77,93 @@ export default function ItemsTab() {
 
     load();
 
-    // Cleanup when component unmounts
     return () => {
       alive = false;
     };
   }, [page]);
 
-  // 🔍 Filter items on the CURRENT page only
+  // Keep page input in sync with current page
+  useEffect(() => {
+    setPageInput(String(page + 1));
+  }, [page]);
+
+  // Fetch full item list for global search
+  useEffect(() => {
+    let alive = true;
+    const reqId = ++searchRequestIdRef.current;
+
+    async function loadAllItems() {
+      if (!isSearching) return;
+      if (allItems.length > 0) return;
+
+      setSearchLoading(true);
+      setErrorMsg("");
+
+      try {
+        const res = await P.getItemsList({ offset: 0, limit: 100000 });
+
+        if (!alive || reqId !== searchRequestIdRef.current) return;
+        setAllItems(res?.results ?? []);
+      } catch (err) {
+        if (!alive || reqId !== searchRequestIdRef.current) return;
+        setErrorMsg(err?.message || "Failed to load searchable item list.");
+      } finally {
+        if (!alive || reqId !== searchRequestIdRef.current) return;
+        setSearchLoading(false);
+      }
+    }
+
+    loadAllItems();
+
+    return () => {
+      alive = false;
+    };
+  }, [isSearching, allItems.length]);
+
+  // Select data source based on search state
   const filtered = useMemo(() => {
-    const results = data?.results ?? [];
     const q = query.trim().toLowerCase();
 
-    if (!q) return results;
+    if (!q) return data?.results ?? [];
 
-    return results.filter((item) => item.name.includes(q));
-  }, [data, query]);
+    return allItems.filter((item) => item.name.includes(q));
+  }, [data, allItems, query]);
 
-  // Pagination calculations
   const totalCount = data?.count ?? 0;
   const maxPage = totalCount
     ? Math.max(0, Math.ceil(totalCount / LIMIT) - 1)
     : 0;
+
+  // Jump to a specific page
+  function goToPage() {
+    const parsed = Number(pageInput);
+
+    if (!Number.isInteger(parsed)) {
+      setPageInput(String(page + 1));
+      return;
+    }
+
+    const nextPage = Math.min(Math.max(parsed, 1), maxPage + 1);
+    setPage(nextPage - 1);
+  }
+
+  // Allow Enter key to trigger page jump
+  function handlePageInputKeyDown(e) {
+    if (e.key === "Enter") {
+      goToPage();
+    }
+  }
 
   return (
     <section className="p-6 text-left">
       <h2 className="font-burger text-2xl text-slate-100">Items</h2>
 
       <p className="text-sm text-slate-300 mt-1">
-        Browse items. Use search to filter the current page.
+        Browse items. Search looks across all pages.
       </p>
 
-      {/* 🔎 Search + Pagination Controls */}
+      {/* Search + pagination controls */}
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        
         {/* Search input */}
         <div className="w-full sm:max-w-md">
           <label className="sr-only" htmlFor="item-search">
@@ -117,59 +173,53 @@ export default function ItemsTab() {
             id="item-search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search on this page (e.g. potion)"
+            placeholder="Search all pages (e.g. potion)"
             className="w-full rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-300/70"
           />
         </div>
 
-        {/* Pagination buttons */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            disabled={loading || page === 0}
-          >
-            Prev
-          </button>
-
-          {/* Current page display */}
-          <div className="text-sm text-slate-300">
-            Page <span className="text-slate-100">{page + 1}</span>
-            {totalCount ? (
-              <>
-                {" "}
-                / <span className="text-slate-100">{maxPage + 1}</span>
-              </>
-            ) : null}
-          </div>
-
-          <button
-            onClick={() => setPage((p) => Math.min(maxPage, p + 1))}
-            disabled={loading || page >= maxPage}
-          >
-            Next
-          </button>
-        </div>
+        {/* Pagination controls */}
+        <PokedexPagination
+          page={page}
+          maxPage={maxPage}
+          totalCount={totalCount}
+          pageInput={pageInput}
+          onPageInputChange={(e) => setPageInput(e.target.value)}
+          onPageInputKeyDown={handlePageInputKeyDown}
+          onGoToPage={goToPage}
+          onPrevPage={() => setPage((p) => Math.max(0, p - 1))}
+          onNextPage={() => setPage((p) => Math.min(maxPage, p + 1))}
+          loading={loading}
+          searchLoading={searchLoading}
+          isSearching={isSearching}
+          inputId="item-page-input"
+        />
       </div>
 
-      {/* ❌ Error state */}
+      {/* Show search mode notice */}
+      {isSearching ? (
+        <div className="mt-3 text-sm text-slate-400">
+          Showing search results across all pages. Page browsing is disabled while searching.
+        </div>
+      ) : null}
+
+      {/* Error state */}
       {errorMsg ? (
         <div className="mt-6 text-red-200">{errorMsg}</div>
       ) : null}
 
-      {/* ⏳ Loading state (skeleton cards) */}
-      {loading ? (
+      {/* Loading state */}
+      {loading || searchLoading ? (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: LIMIT }).map((_, i) => (
             <div key={i} className="h-24 bg-slate-800/30 animate-pulse" />
           ))}
         </div>
       ) : (
-        // ✅ Main grid
+        // Main item grid
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {filtered.map((item) => {
             const id = getIdFromUrl(item.url);
-
-            // Item image uses NAME instead of ID
             const sprite = id
               ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.name}.png`
               : null;
@@ -180,7 +230,6 @@ export default function ItemsTab() {
                 className="rounded-xl border border-slate-800 bg-slate-950/30 p-4 hover:bg-slate-950/50 transition"
               >
                 <div className="flex items-center gap-3">
-                
                   {/* Item image */}
                   {sprite ? (
                     <img
@@ -210,10 +259,10 @@ export default function ItemsTab() {
         </div>
       )}
 
-      {/* 🚫 Empty state (no results after search) */}
-      {!loading && !errorMsg && filtered.length === 0 ? (
+      {/* Empty state */}
+      {!loading && !searchLoading && !errorMsg && filtered.length === 0 ? (
         <div className="mt-6 text-slate-300">
-          No items match this search on the current page.
+          No items match this search.
         </div>
       ) : null}
     </section>

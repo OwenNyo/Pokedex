@@ -1,113 +1,168 @@
 // src/components/pokemon/PokemonTab.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pokedex } from "pokeapi-js-wrapper";
+import PokedexPagination from "./PokedexPagination";
 
-// One shared API client instance
-// This avoids recreating it on every render and allows caching
+// Shared API client instance
 const P = new Pokedex({
   cache: true,
   timeout: 10_000,
 });
 
-// Extract Pokémon ID from its API URL
+// Extract Pokémon ID from API URL
 function getIdFromUrl(url) {
-  // url looks like: https://pokeapi.co/api/v2/pokemon/25/
+  // Example: https://pokeapi.co/api/v2/pokemon/25/
   const match = url.match(/\/pokemon\/(\d+)\//);
   return match ? Number(match[1]) : null;
 }
 
-// Capitalize first letter of Pokémon name
+// Format Pokémon name for display
 function capitalizeWords(text) {
   if (!text) return text;
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 export default function PokemonTab() {
-  const LIMIT = 24; // number of Pokémon per page
+  const LIMIT = 24;
 
-  // Current page (0-based index)
+  // Pagination state
   const [page, setPage] = useState(0);
+  const [pageInput, setPageInput] = useState("1");
 
-  // Search input value
+  // Search state
   const [query, setQuery] = useState("");
 
-  // UI states
+  // UI state
   const [loading, setLoading] = useState(true);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // API data: { count, results: [{ name, url }] }
+  // Data state
   const [data, setData] = useState(null);
+  const [allPokemon, setAllPokemon] = useState([]);
 
-  // Used to prevent outdated API responses from overriding newer ones
+  // Request tracking
   const requestIdRef = useRef(0);
+  const searchRequestIdRef = useRef(0);
 
-  // 🔄 Fetch Pokémon list whenever "page" changes
+  // Search mode is active whenever the user has typed something
+  const isSearching = query.trim().length > 0;
+
+  // Fetch paginated Pokémon list when page changes
   useEffect(() => {
-    let alive = true; // track if component is still mounted
+    let alive = true;
     const reqId = ++requestIdRef.current;
 
     async function load() {
-      setLoading(true);       // start loading state
-      setErrorMsg("");        // clear previous errors
+      setLoading(true);
+      setErrorMsg("");
 
       try {
-        // Calculate which slice of data to fetch
         const interval = { offset: page * LIMIT, limit: LIMIT };
-
-        // Fetch Pokémon list from API
         const res = await P.getPokemonsList(interval);
 
-        // Ignore if this response is outdated
         if (!alive || reqId !== requestIdRef.current) return;
-
-        setData(res); // store fetched data
+        setData(res);
       } catch (err) {
         if (!alive || reqId !== requestIdRef.current) return;
         setErrorMsg(err?.message || "Failed to load Pokémon list.");
       } finally {
         if (!alive || reqId !== requestIdRef.current) return;
-        setLoading(false); // stop loading state
+        setLoading(false);
       }
     }
 
     load();
 
-    // Cleanup when component unmounts
     return () => {
       alive = false;
     };
-  }, [page]); // re-run when page changes
+  }, [page]);
 
-  // 🔍 Filter Pokémon on CURRENT page only
+  // Keep page input in sync with current page
+  useEffect(() => {
+    setPageInput(String(page + 1));
+  }, [page]);
+
+  // Fetch full Pokémon list for global search
+  useEffect(() => {
+    let alive = true;
+    const reqId = ++searchRequestIdRef.current;
+
+    async function loadAllPokemon() {
+      if (!isSearching) return;
+      if (allPokemon.length > 0) return;
+
+      setSearchLoading(true);
+      setErrorMsg("");
+
+      try {
+        const res = await P.getPokemonsList({ offset: 0, limit: 100000 });
+
+        if (!alive || reqId !== searchRequestIdRef.current) return;
+        setAllPokemon(res?.results ?? []);
+      } catch (err) {
+        if (!alive || reqId !== searchRequestIdRef.current) return;
+        setErrorMsg(err?.message || "Failed to load searchable Pokémon list.");
+      } finally {
+        if (!alive || reqId !== searchRequestIdRef.current) return;
+        setSearchLoading(false);
+      }
+    }
+
+    loadAllPokemon();
+
+    return () => {
+      alive = false;
+    };
+  }, [isSearching, allPokemon.length]);
+
+  // Select data source based on search state
   const filtered = useMemo(() => {
-    const results = data?.results ?? [];
     const q = query.trim().toLowerCase();
 
-    if (!q) return results;
+    if (!q) {
+      return data?.results ?? [];
+    }
 
-    // simple client-side filter
-    return results.filter((p) => p.name.includes(q));
-  }, [data, query]);
+    return allPokemon.filter((p) => p.name.includes(q));
+  }, [data, allPokemon, query]);
 
-  // Total number of Pokémon from API
   const totalCount = data?.count ?? 0;
-
-  // Max page index (0-based)
   const maxPage = totalCount
     ? Math.max(0, Math.ceil(totalCount / LIMIT) - 1)
     : 0;
+
+  // Jump to a specific page
+  function goToPage() {
+    const parsed = Number(pageInput);
+
+    if (!Number.isInteger(parsed)) {
+      setPageInput(String(page + 1));
+      return;
+    }
+
+    const nextPage = Math.min(Math.max(parsed, 1), maxPage + 1);
+    setPage(nextPage - 1);
+  }
+
+  // Allow Enter key to trigger page jump
+  function handlePageInputKeyDown(e) {
+    if (e.key === "Enter") {
+      goToPage();
+    }
+  }
 
   return (
     <section className="p-6 text-left">
       <h2 className="font-burger text-2xl text-slate-100">Pokémon</h2>
 
       <p className="text-sm text-slate-300 mt-1">
-        Browse Pokémon. Use search to filter the current page.
+        Browse Pokémon. Search looks across all pages.
       </p>
 
-      {/* 🔎 Search + Pagination Controls */}
+      {/* Search + pagination controls */}
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        
         {/* Search input */}
         <div className="w-full sm:max-w-md">
           <label className="sr-only" htmlFor="pokemon-search">
@@ -116,50 +171,46 @@ export default function PokemonTab() {
           <input
             id="pokemon-search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)} // update search
-            placeholder="Search on this page (e.g. pika)"
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search all pages (e.g. pika)"
             className="w-full rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-2 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-yellow-300/70"
           />
         </div>
 
-        {/* Pagination buttons */}
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))} // go to previous page
-            disabled={loading || page === 0}
-          >
-            Prev
-          </button>
-
-          {/* Page indicator */}
-          <div className="text-sm text-slate-300">
-            Page <span className="text-slate-100">{page + 1}</span>
-            {totalCount ? (
-              <>
-                {" "}
-                / <span className="text-slate-100">{maxPage + 1}</span>
-              </>
-            ) : null}
-          </div>
-
-          <button
-            onClick={() => setPage((p) => Math.min(maxPage, p + 1))} // next page
-            disabled={loading || page >= maxPage}
-          >
-            Next
-          </button>
-        </div>
+        {/* Pagination controls */}
+        <PokedexPagination
+          page={page}
+          maxPage={maxPage}
+          totalCount={totalCount}
+          pageInput={pageInput}
+          onPageInputChange={(e) => setPageInput(e.target.value)}
+          onPageInputKeyDown={handlePageInputKeyDown}
+          onGoToPage={goToPage}
+          onPrevPage={() => setPage((p) => Math.max(0, p - 1))}
+          onNextPage={() => setPage((p) => Math.min(maxPage, p + 1))}
+          loading={loading}
+          searchLoading={searchLoading}
+          isSearching={isSearching}
+          inputId="pokemon-page-input"
+        />
       </div>
 
-      {/* ❌ Error state */}
+      {/* Show search mode notice */}
+      {isSearching ? (
+        <div className="mt-3 text-sm text-slate-400">
+          Showing search results across all pages. Page browsing is disabled while searching.
+        </div>
+      ) : null}
+
+      {/* Error state */}
       {errorMsg ? (
         <div className="mt-6 rounded-xl border border-red-900/40 bg-red-950/20 p-4 text-red-200">
           {errorMsg}
         </div>
       ) : null}
 
-      {/* ⏳ Loading state (skeleton cards) */}
-      {loading ? (
+      {/* Loading state */}
+      {loading || searchLoading ? (
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: LIMIT }).map((_, i) => (
             <div
@@ -169,12 +220,10 @@ export default function PokemonTab() {
           ))}
         </div>
       ) : (
-        // ✅ Main Pokémon grid
+        // Main Pokémon grid
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {filtered.map((p) => {
             const id = getIdFromUrl(p.url);
-
-            // Construct sprite image URL using Pokémon ID
             const sprite = id
               ? `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
               : null;
@@ -185,7 +234,6 @@ export default function PokemonTab() {
                 className="rounded-xl border border-slate-800 bg-slate-950/30 p-4 hover:bg-slate-950/50 transition"
               >
                 <div className="flex items-center gap-3">
-
                   {/* Pokémon image */}
                   {sprite ? (
                     <img
@@ -215,10 +263,10 @@ export default function PokemonTab() {
         </div>
       )}
 
-      {/* 🚫 Empty state when no results match search */}
-      {!loading && !errorMsg && filtered.length === 0 ? (
+      {/* Empty state */}
+      {!loading && !searchLoading && !errorMsg && filtered.length === 0 ? (
         <div className="mt-6 text-slate-300">
-          No Pokémon match this search on the current page.
+          No Pokémon match this search.
         </div>
       ) : null}
     </section>
