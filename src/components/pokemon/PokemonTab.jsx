@@ -1,6 +1,7 @@
 // src/components/pokemon/PokemonTab.jsx
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Pokedex } from "pokeapi-js-wrapper";
+import { useNavigate } from "react-router-dom";
 import PokedexPagination from "./PokedexPagination";
 
 // Shared API client instance
@@ -47,6 +48,9 @@ export default function PokemonTab() {
 
   // Search mode is active whenever the user has typed something
   const isSearching = query.trim().length > 0;
+
+  // Navigation
+  const navigate = useNavigate();
 
   // Fetch paginated Pokémon list when page changes
   useEffect(() => {
@@ -231,7 +235,8 @@ export default function PokemonTab() {
             return (
               <div
                 key={p.name}
-                className="rounded-xl border border-slate-800 bg-slate-950/30 p-4 hover:bg-slate-950/50 transition"
+                onClick={() => id && navigate(`/pokedex/pokemon/${id}`)}
+                className="cursor-pointer rounded-xl border border-slate-800 bg-slate-950/30 p-4 hover:bg-slate-950/50 hover:scale-[1.02] transition"
               >
                 <div className="flex items-center gap-3">
                   {/* Pokémon image */}
