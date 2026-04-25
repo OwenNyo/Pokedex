@@ -1,4 +1,5 @@
-// src/pages/HomePage.jsx
+import { useNavigate } from "react-router-dom";
+
 import pokemonImg from "../assets/pokemon.png";
 import movesImg from "../assets/moves.png";
 import itemsImg from "../assets/items.png";
@@ -40,50 +41,37 @@ const sections = [
 ];
 
 export default function HomePage() {
+  const navigate = useNavigate();
+
   return (
     <div className="w-full space-y-10 px-6 lg:px-16 py-8">
+
       {/* Hero */}
       <section className="grid gap-10 lg:grid-cols-[3fr,2fr] items-start">
-        {/* Left: title + quick search */}
+
+        {/* Left */}
         <div className="space-y-6 text-left">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-50">
             A clean, modern
-            <span className="font-burger block text-red-400">Pokédex dashboard.</span>
+            <span className="font-burger block text-red-400">
+              Pokédex dashboard.
+            </span>
           </h2>
 
-          {/* Small memo */}
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
-            Your not-so-official Smogon Universiuty for Pokémon, moves, items and abilities. But it's not Smogon University.
+            Your not-so-official Smogon University for Pokémon, moves, items and abilities. But it's not Smogon University.
           </p>
-
-          {/* Quick search */}
-          <div className="mt-2 max-w-xl">
-            <label className="font-burger block text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">
-              Quick search
-            </label>
-            <div className="flex items-center gap-2 rounded-full bg-slate-900 border border-slate-700 px-3 py-2 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500/70 transition">
-              <input
-                type="text"
-                placeholder="Search a Pokémon by name or ID…"
-                className="flex-1 bg-transparent text-sm text-slate-100 placeholder:text-slate-500 outline-none"
-              />
-              <span className="font-burger text-[11px] px-2 py-1 rounded-full bg-red-500 text-white font-medium">
-                Soon
-              </span>
-            </div>
-          </div>
         </div>
 
-        {/* Right: Trainer Profile card, left-aligned in its column */}
+        {/* Right: Profile Card */}
         <div className="flex justify-end">
           <div className="w-full max-w-sm rounded-[1.9rem] overflow-hidden bg-slate-950 border border-slate-800 shadow-xl shadow-red-900/50">
-            {/* Top (red) */}
             <div className="h-24 bg-gradient-to-b from-red-600 to-red-700 flex items-center justify-center relative">
               <div className="absolute inset-x-0 bottom-[-18px] flex justify-center">
                 <div className="h-9 w-9 rounded-full border-[6px] border-slate-900 bg-white shadow-md" />
               </div>
             </div>
-            {/* Bottom */}
+
             <div className="bg-slate-900 pt-8 pb-4 px-5 text-left">
               <p className="font-burger text-xs uppercase tracking-[0.25em] text-slate-400 mb-1">
                 Trainer profile
@@ -97,7 +85,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Sections grid */}
+      {/* Sections */}
       <section className="space-y-3">
         <h3 className="font-burger text-lg font-semibold text-slate-100 text-center">
           What do you want to explore today?
@@ -105,8 +93,9 @@ export default function HomePage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {sections.map((section) => (
-            <div
+            <button
               key={section.key}
+              onClick={() => navigate(`/pokedex/${section.key}`)}
               className={`group relative overflow-hidden rounded-2xl border bg-slate-900/90 backdrop-blur-sm px-4 py-4 text-left shadow-md hover:-translate-y-1 hover:shadow-xl transition ${section.accent}`}
             >
               <div className="flex items-center gap-3 mb-3">
@@ -117,31 +106,52 @@ export default function HomePage() {
                     className="h-8 w-8 object-contain"
                   />
                 </div>
+
                 <div>
                   <div className="flex items-center gap-2">
                     <h4 className="font-burger text-sm font-semibold text-slate-50">
                       {section.title}
                     </h4>
+
                     <span className="font-burger text-[10px] px-2 py-[2px] rounded-full bg-slate-950/70 border border-slate-700 text-slate-300 uppercase tracking-wide">
                       {section.badge}
                     </span>
                   </div>
+
                   <p className="text-[11px] text-slate-400">
-                    Tap to focus this category later
+                    Open {section.title} tab
                   </p>
                 </div>
               </div>
+
               <p className="text-xs text-slate-300 leading-relaxed">
                 {section.description}
               </p>
-              <div className="mt-3 text-[11px] text-red-300 group-hover:text-red-200 flex items-center gap-1">
-                <span>Planned: open {section.title.toLowerCase()} view</span>
-                <span className="translate-y-[1px]">›</span>
-              </div>
-            </div>
+            </button>
           ))}
         </div>
       </section>
+
+      {/* Team Builder Card */}
+      <section className="pt-2">
+        <div
+          onClick={() => navigate("/team-builder")}
+          className="cursor-pointer rounded-2xl border border-blue-500/40 bg-blue-500/10 p-6 text-center hover:bg-blue-500/20 transition"
+        >
+          <h3 className="font-burger text-lg text-blue-300 mb-2">
+            Team Builder
+          </h3>
+
+          <p className="text-sm text-slate-300">
+            Build your team of 6 Pokémon and analyse their strengths, weaknesses and coverage.
+          </p>
+
+          <div className="mt-3 text-xs text-blue-300">
+            Open Team Builder →
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 }
