@@ -5,9 +5,9 @@ import { Pokedex } from "pokeapi-js-wrapper";
 import typeChart from "../data/types";
 
 // import split components
-import TeamDisplay from "../components/teamBuilder/TeamDisplay";
-import PokemonPool from "../components/teamBuilder/PokemonPool";
-import TeamAnalysis from "../components/teamBuilder/TeamAnalysis";
+import TeamDisplay from "../components/teambuilder/TeamDisplay";
+import PokemonPool from "../components/teambuilder/PokemonPool";
+import TeamAnalysis from "../components/teambuilder/TeamAnalysis";
 
 // initialise PokeAPI wrapper with caching
 const P = new Pokedex({
