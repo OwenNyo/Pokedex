@@ -15,11 +15,21 @@ const P = new Pokedex({
   timeout: 10_000,
 });
 
-// limit to Kanto for now
-const LIMIT = 151;
-
 // max number of Pokémon in team
 const MAX_TEAM_SIZE = 6;
+
+// generation ID ranges
+const GENERATIONS = [
+  { value: 1, label: "Generation 1 - Kanto", start: 1, end: 151 },
+  { value: 2, label: "Generation 2 - Johto", start: 152, end: 251 },
+  { value: 3, label: "Generation 3 - Hoenn", start: 252, end: 386 },
+  { value: 4, label: "Generation 4 - Sinnoh", start: 387, end: 493 },
+  { value: 5, label: "Generation 5 - Unova", start: 494, end: 649 },
+  { value: 6, label: "Generation 6 - Kalos", start: 650, end: 721 },
+  { value: 7, label: "Generation 7 - Alola", start: 722, end: 809 },
+  { value: 8, label: "Generation 8 - Galar", start: 810, end: 905 },
+  { value: 9, label: "Generation 9 - Paldea", start: 906, end: 1025 },
+];
 
 // consistent order for type calculations
 const TYPE_ORDER = [
@@ -137,6 +147,8 @@ function calculateTeamCoverage(team, typeData) {
 }
 
 export default function TeamBuilderPage() {
+  // selected generation
+  const [selectedGeneration, setSelectedGeneration] = useState(1);
 
   // state for all Pokémon fetched from API
   const [allPokemon, setAllPokemon] = useState([]);
@@ -151,61 +163,82 @@ export default function TeamBuilderPage() {
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // type chart data (gen 6)
+  // cache loaded generation data
+  const [generationCache, setGenerationCache] = useState({});
+
+  // type chart data
   const typeData = typeChart[0].type_data;
 
-  // fetch Pokémon data on mount
+  // get selected generation data
+  const currentGeneration = GENERATIONS.find(
+    (generation) => generation.value === selectedGeneration
+  );
+
+  // fetch Pokémon data whenever generation changes
   useEffect(() => {
-    let alive = true; // prevent state updates if component unmounts
+  let alive = true;
 
-    async function loadPokemonPool() {
-      setLoading(true);
-      setErrorMsg("");
+  async function loadPokemonPool() {
+    setLoading(true);
+    setErrorMsg("");
+    setAllPokemon([]);
+    setTeam([]);
+    setShowAnalysis(false);
 
-      try {
-        // fetch list of Pokémon
-        const list = await P.getPokemonsList({
-          offset: 0,
-          limit: LIMIT,
-        });
-
-        // fetch detailed data for each Pokémon
-        const details = await Promise.all(
-          list.results.map(async (pokemon) => {
-            const id = getIdFromUrl(pokemon.url);
-            const detail = await P.getPokemonByName(pokemon.name);
-
-            return {
-              id,
-              name: pokemon.name,
-              sprite: getSprite(id),
-              types: detail.types.map((entry) => entry.type.name),
-            };
-          })
-        );
-
-        if (!alive) return;
-        setAllPokemon(details);
-
-      } catch (err) {
-        if (!alive) return;
-
-        // store error message
-        setErrorMsg(err?.message || "Failed to load Pokémon.");
-
-      } finally {
-        if (!alive) return;
-        setLoading(false);
-      }
+    // use cached generation if it was already loaded before
+    if (generationCache[selectedGeneration]) {
+      setAllPokemon(generationCache[selectedGeneration]);
+      setLoading(false);
+      return;
     }
 
-    loadPokemonPool();
+    try {
+      const offset = currentGeneration.start - 1;
+      const limit = currentGeneration.end - currentGeneration.start + 1;
 
-    // cleanup function
-    return () => {
-      alive = false;
-    };
-  }, []);
+      const list = await P.getPokemonsList({
+        offset,
+        limit,
+      });
+
+      const details = await Promise.all(
+        list.results.map(async (pokemon) => {
+          const id = getIdFromUrl(pokemon.url);
+          const detail = await P.getPokemonByName(pokemon.name);
+
+          return {
+            id,
+            name: pokemon.name,
+            sprite: getSprite(id),
+            types: detail.types.map((entry) => entry.type.name),
+          };
+        })
+      );
+
+      if (!alive) return;
+
+      setAllPokemon(details);
+
+      // save generation into local page cache
+      setGenerationCache((previousCache) => ({
+        ...previousCache,
+        [selectedGeneration]: details,
+      }));
+    } catch (err) {
+      if (!alive) return;
+      setErrorMsg(err?.message || "Failed to load Pokémon.");
+    } finally {
+      if (!alive) return;
+      setLoading(false);
+    }
+  }
+
+  loadPokemonPool();
+
+  return () => {
+    alive = false;
+  };
+  }, [selectedGeneration, currentGeneration]);
 
   // filter out Pokémon already in team
   const availablePokemon = useMemo(() => {
@@ -223,7 +256,7 @@ export default function TeamBuilderPage() {
     return calculateTeamCoverage(team, typeData);
   }, [team, typeData]);
 
-  // add Pokémon to team (max 6, no duplicates)
+  // add Pokémon to team
   function addToTeam(pokemon) {
     setTeam((currentTeam) => {
       if (currentTeam.length >= MAX_TEAM_SIZE) return currentTeam;
@@ -252,7 +285,6 @@ export default function TeamBuilderPage() {
 
   return (
     <section className="w-full px-6 lg:px-16 py-8 space-y-6 text-slate-100">
-
       {/* page header */}
       <div className="text-left space-y-2">
         <h1 className="font-burger text-4xl text-slate-100">Team Builder</h1>
@@ -260,6 +292,33 @@ export default function TeamBuilderPage() {
         <p className="text-sm text-slate-300">
           Build a team of 6 Pokémon and analyse their type defense and coverage.
         </p>
+      </div>
+
+      {/* generation selector */}
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-800 bg-slate-950/40 p-4">
+        <label
+          htmlFor="generation"
+          className="text-sm font-semibold text-slate-300"
+        >
+          Choose generation:
+        </label>
+
+        <select
+          id="generation"
+          value={selectedGeneration}
+          onChange={(event) => setSelectedGeneration(Number(event.target.value))}
+          className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-100 outline-none transition hover:border-blue-500 focus:border-blue-500"
+        >
+          {GENERATIONS.map((generation) => (
+            <option key={generation.value} value={generation.value}>
+              {generation.label}
+            </option>
+          ))}
+        </select>
+
+        <span className="text-xs text-slate-500">
+          Showing #{currentGeneration.start} to #{currentGeneration.end}
+        </span>
       </div>
 
       {/* error message */}
