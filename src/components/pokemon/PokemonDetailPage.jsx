@@ -1,15 +1,14 @@
 // src/pages/PokemonDetailPage.jsx
+
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Pokedex } from "pokeapi-js-wrapper";
 
-// Shared API client
 const P = new Pokedex({
   cache: true,
   timeout: 10_000,
 });
 
-// Mapping Pokémon types to UI styles
 const TYPE_STYLES = {
   normal: "bg-stone-500/80 text-white",
   fire: "bg-orange-500/80 text-white",
@@ -31,16 +30,15 @@ const TYPE_STYLES = {
   fairy: "bg-pink-300/90 text-slate-950",
 };
 
-// Capitalize API names like "special-attack" → "Special Attack"
 function capitalizeWords(text) {
   if (!text) return text;
+
   return text
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
 
-// Convert API stat names into cleaner display labels
 function formatStatName(name) {
   const map = {
     hp: "HP",
@@ -54,21 +52,19 @@ function formatStatName(name) {
   return map[name] ?? capitalizeWords(name);
 }
 
-// Return color gradient based on stat strength
 function getStatBarClass(value) {
   if (value < 40) return "bg-gradient-to-r from-red-600 to-red-400";
   if (value < 70) return "bg-gradient-to-r from-orange-500 to-yellow-400";
   if (value < 100) return "bg-gradient-to-r from-yellow-400 to-amber-300";
   if (value < 130) return "bg-gradient-to-r from-lime-500 to-green-400";
+
   return "bg-gradient-to-r from-emerald-500 to-teal-400";
 }
 
-// Get styling for a Pokémon type
 function getTypeClass(typeName) {
   return TYPE_STYLES[typeName] ?? "bg-slate-700 text-white";
 }
 
-// Recursively extract all evolution names from evolution tree
 function extractEvolutionNames(chainNode, acc = []) {
   if (!chainNode) return acc;
 
@@ -84,12 +80,10 @@ function extractEvolutionNames(chainNode, acc = []) {
 export default function PokemonDetailPage() {
   const { id } = useParams();
 
-  // ---------- Data State ----------
   const [pokemon, setPokemon] = useState(null);
   const [species, setSpecies] = useState(null);
   const [evolutionPokemon, setEvolutionPokemon] = useState([]);
 
-  // ---------- UI State ----------
   const [loading, setLoading] = useState(true);
   const [evolutionLoading, setEvolutionLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
@@ -103,33 +97,31 @@ export default function PokemonDetailPage() {
       setErrorMsg("");
 
       try {
-        // 1. Fetch main Pokémon data
         const pokemonRes = await P.getPokemonByName(id);
+
         if (!alive) return;
         setPokemon(pokemonRes);
 
-        // 2. Fetch species (needed for evolution chain)
-        const speciesRes = await fetch(pokemonRes.species.url).then((r) => {
-          if (!r.ok) throw new Error("Failed to load Pokémon species.");
-          return r.json();
+        const speciesRes = await fetch(pokemonRes.species.url).then((res) => {
+          if (!res.ok) throw new Error("Failed to load Pokémon species.");
+          return res.json();
         });
 
         if (!alive) return;
         setSpecies(speciesRes);
 
-        // 3. Fetch evolution chain
         if (speciesRes.evolution_chain?.url) {
-          const evolutionRes = await fetch(speciesRes.evolution_chain.url).then((r) => {
-            if (!r.ok) throw new Error("Failed to load evolution chain.");
-            return r.json();
-          });
+          const evolutionRes = await fetch(speciesRes.evolution_chain.url).then(
+            (res) => {
+              if (!res.ok) throw new Error("Failed to load evolution chain.");
+              return res.json();
+            }
+          );
 
           if (!alive) return;
 
-          // Flatten evolution tree into list
           const names = extractEvolutionNames(evolutionRes.chain, []);
 
-          // Fetch each evolution's details (for sprite + id)
           const evoDetails = await Promise.all(
             names.map((name) => P.getPokemonByName(name))
           );
@@ -152,11 +144,10 @@ export default function PokemonDetailPage() {
     loadPokemonDetails();
 
     return () => {
-      alive = false; // prevent state update after unmount
+      alive = false;
     };
   }, [id]);
 
-  // Choose best available sprite
   const artwork = useMemo(() => {
     return (
       pokemon?.sprites?.other?.["official-artwork"]?.front_default ||
@@ -165,7 +156,6 @@ export default function PokemonDetailPage() {
     );
   }, [pokemon]);
 
-  // ---------- Loading / Error ----------
   if (loading) {
     return <div className="p-6 text-slate-300">Loading Pokémon details...</div>;
   }
@@ -182,26 +172,29 @@ export default function PokemonDetailPage() {
 
   return (
     <section className="p-6 text-left text-slate-100">
-      {/* Navigation */}
       <div className="mb-5">
-        <Link to="/pokedex/pokemon" className="...">
+        <Link
+          to="/pokedex/pokemon"
+          className="text-sm font-semibold text-slate-300 transition hover:text-blue-300"
+        >
           ← Back to Pokémon
         </Link>
       </div>
 
       <div className="rounded-2xl border border-slate-800 bg-slate-950/20 p-6">
-        {/* Header */}
         <div className="flex flex-col gap-6 md:flex-row">
-          {/* Artwork */}
-          <div className="flex h-44 w-44 items-center justify-center">
+          <div className="flex h-44 w-44 shrink-0 items-center justify-center">
             {artwork ? (
-              <img src={artwork} alt={pokemon.name} />
+              <img
+                src={artwork}
+                alt={pokemon.name}
+                className="h-44 w-44 object-contain"
+              />
             ) : (
-              <div>PK</div>
+              <div className="text-sm text-slate-500">PK</div>
             )}
           </div>
 
-          {/* Basic Info */}
           <div className="flex-1 space-y-4">
             <div>
               <h1 className="text-4xl font-bold">
@@ -210,14 +203,18 @@ export default function PokemonDetailPage() {
               <p className="text-2xl text-slate-400">#{pokemon.id}</p>
             </div>
 
-            {/* Types */}
             <div>
-              <h2>Types</h2>
-              <div className="flex gap-2">
+              <h2 className="mb-2 text-sm font-semibold text-slate-300">
+                Types
+              </h2>
+
+              <div className="flex flex-wrap gap-2">
                 {pokemon.types.map((entry) => (
                   <span
                     key={entry.type.name}
-                    className={getTypeClass(entry.type.name)}
+                    className={`rounded-full px-3 py-1 text-xs font-bold ${getTypeClass(
+                      entry.type.name
+                    )}`}
                   >
                     {capitalizeWords(entry.type.name)}
                   </span>
@@ -225,12 +222,17 @@ export default function PokemonDetailPage() {
               </div>
             </div>
 
-            {/* Abilities */}
             <div>
-              <h2>Abilities</h2>
-              <div className="flex gap-2">
+              <h2 className="mb-2 text-sm font-semibold text-slate-300">
+                Abilities
+              </h2>
+
+              <div className="flex flex-wrap gap-2">
                 {pokemon.abilities.map((entry) => (
-                  <span key={entry.ability.name}>
+                  <span
+                    key={entry.ability.name}
+                    className="rounded-full border border-slate-700 bg-slate-900/70 px-3 py-1 text-xs text-slate-200"
+                  >
                     {capitalizeWords(entry.ability.name)}
                     {entry.is_hidden ? " (Hidden)" : " (Base)"}
                   </span>
@@ -240,54 +242,88 @@ export default function PokemonDetailPage() {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="mt-8">
-          <h2>Stats</h2>
+          <h2 className="mb-4 text-xl font-bold text-slate-100">Stats</h2>
 
-          {pokemon.stats.map((entry) => {
-            const value = entry.base_stat;
-            const widthPercent = Math.min((value / 180) * 100, 100);
+          <div className="max-w-xl space-y-3">
+            {pokemon.stats.map((entry) => {
+              const value = entry.base_stat;
+              const widthPercent = Math.min((value / 180) * 100, 100);
 
-            return (
-              <div key={entry.stat.name}>
-                {/* Stat label + value */}
-                <div>
-                  {formatStatName(entry.stat.name)} — {value}
+              return (
+                <div key={entry.stat.name}>
+                  <div className="mb-1 flex justify-between text-sm">
+                    <span className="font-medium text-slate-300">
+                      {formatStatName(entry.stat.name)}
+                    </span>
+                    <span className="text-slate-400">{value}</span>
+                  </div>
+
+                  <div className="h-3 overflow-hidden rounded-full bg-slate-800">
+                    <div
+                      className={`h-full rounded-full ${getStatBarClass(
+                        value
+                      )}`}
+                      style={{ width: `${widthPercent}%` }}
+                    />
+                  </div>
                 </div>
-
-                {/* Stat bar */}
-                <div className="bg-slate-800">
-                  <div
-                    className={getStatBarClass(value)}
-                    style={{ width: `${widthPercent}%` }}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
-        {/* Evolution */}
         <div className="mt-8">
-          <h2>Evolution Line</h2>
+          <h2 className="mb-4 text-xl font-bold text-slate-100">
+            Evolution Line
+          </h2>
 
           {evolutionLoading ? (
-            <div>Loading evolutions...</div>
+            <div className="text-sm text-slate-400">Loading evolutions...</div>
           ) : evolutionPokemon.length > 0 ? (
-            <div className="flex gap-4">
-              {evolutionPokemon.map((evo, index) => (
-                <div key={evo.id}>
-                  <Link to={`/pokedex/pokemon/${evo.id}`}>
-                    {capitalizeWords(evo.name)}
-                  </Link>
+            <div className="flex flex-wrap items-center gap-4">
+              {evolutionPokemon.map((evo, index) => {
+                const evoSprite =
+                  evo.sprites?.other?.["official-artwork"]?.front_default ||
+                  evo.sprites?.front_default;
 
-                  {/* Arrow between evolutions */}
-                  {index < evolutionPokemon.length - 1 && " → "}
-                </div>
-              ))}
+                return (
+                  <div key={evo.id} className="flex items-center gap-4">
+                    <Link
+                      to={`/pokedex/pokemon/${evo.id}`}
+                      className="group flex flex-col items-center rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-3 transition hover:-translate-y-1 hover:border-blue-500/60 hover:bg-slate-900"
+                    >
+                      <div className="flex h-20 w-20 items-center justify-center">
+                        {evoSprite ? (
+                          <img
+                            src={evoSprite}
+                            alt={evo.name}
+                            className="h-20 w-20 object-contain"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span className="text-sm text-slate-500">PK</span>
+                        )}
+                      </div>
+
+                      <span className="mt-2 text-sm font-semibold text-slate-100 group-hover:text-blue-300">
+                        {capitalizeWords(evo.name)}
+                      </span>
+
+                      <span className="text-xs text-slate-500">#{evo.id}</span>
+                    </Link>
+
+                    {index < evolutionPokemon.length - 1 ? (
+                      <span className="text-2xl text-slate-500">→</span>
+                    ) : null}
+                  </div>
+                );
+              })}
             </div>
           ) : (
-            <div>No evolution data available.</div>
+            <div className="text-sm text-slate-400">
+              No evolution data available.
+            </div>
           )}
         </div>
       </div>
