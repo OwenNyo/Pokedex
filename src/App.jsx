@@ -4,6 +4,7 @@ import LandingLayout from "./components/layout/LandingLayout";
 import PokedexPage from "./pages/PokedexPage";
 import HomePage from "./pages/HomePage";
 import TeamBuilderPage from "./pages/TeamBuilderPage";
+import EggBreedingPage from "./pages/EggBreedingPage";
 
 import PokemonTab from "./components/pokemon/PokemonTab";
 import PokemonDetailPage from "./components/pokemon/PokemonDetailPage";
@@ -29,10 +30,13 @@ export default function App() {
             <Route path="abilities" element={<AbilitiesTab />} />
           </Route>
 
+          {/* Egg Breeding */}
+          <Route path="/egg-breeding" element={<EggBreedingPage />} />
+
           {/* Teambuilder */}
           <Route path="/team-builder" element={<TeamBuilderPage />} />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          
         </Routes>
       </LandingLayout>
     </BrowserRouter>

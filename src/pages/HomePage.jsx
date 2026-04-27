@@ -132,23 +132,46 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Team Builder Card */}
+      {/* Tools Section (Egg Breeding + Team Builder) */}
       <section className="pt-2">
-        <div
-          onClick={() => navigate("/team-builder")}
-          className="cursor-pointer rounded-2xl border border-blue-500/40 bg-blue-500/10 p-6 text-center hover:bg-blue-500/20 transition"
-        >
-          <h3 className="font-burger text-lg text-blue-300 mb-2">
-            Team Builder
-          </h3>
+        <div className="grid gap-4 sm:grid-cols-2">
 
-          <p className="text-sm text-slate-300">
-            Build your team of 6 Pokémon and analyse their strengths, weaknesses and coverage.
-          </p>
+          {/* Egg Breeding Card (LEFT) */}
+          <div
+            onClick={() => navigate("/egg-breeding")}
+            className="cursor-pointer rounded-2xl border border-pink-500/40 bg-pink-500/10 p-6 text-center hover:bg-pink-500/20 transition"
+          >
+            <h3 className="font-burger text-lg text-pink-300 mb-2">
+              Egg Breeding
+            </h3>
 
-          <div className="mt-3 text-xs text-blue-300">
-            Open Team Builder →
+            <p className="text-sm text-slate-300">
+              Compare two Pokémon to check breeding compatibility, egg chances and Day-Care quotes.
+            </p>
+
+            <div className="mt-3 text-xs text-pink-300">
+              Open Egg Breeding →
+            </div>
           </div>
+
+          {/* Team Builder Card (RIGHT) */}
+          <div
+            onClick={() => navigate("/team-builder")}
+            className="cursor-pointer rounded-2xl border border-blue-500/40 bg-blue-500/10 p-6 text-center hover:bg-blue-500/20 transition"
+          >
+            <h3 className="font-burger text-lg text-blue-300 mb-2">
+              Team Builder
+            </h3>
+
+            <p className="text-sm text-slate-300">
+              Build your team of 6 Pokémon and analyse their strengths, weaknesses and coverage.
+            </p>
+
+            <div className="mt-3 text-xs text-blue-300">
+              Open Team Builder →
+            </div>
+          </div>
+
         </div>
       </section>
 

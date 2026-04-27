@@ -4,7 +4,7 @@ import snorlaxLogo from "../../assets/snorlax_logo.png";
 export default function LandingNavbar() {
   const tabs = [
     { label: "Pokedex", to: "/pokedex" },
-    { label: "Showdown", to: "/showdown" },
+    { label: "Egg Breeding", to: "/egg-breeding" },
     { label: "Team Builder", to: "/team-builder" },
   ];
 
